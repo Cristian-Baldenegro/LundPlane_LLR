@@ -7,9 +7,7 @@ Starting from the SMPJ inclusive jet ntuplizer ( https://github.com/errai-/SMPJ 
 Instructions for quick setup:
 
 LCG_lib_name=lib64
-
 LCG_arch=x86_64
-
 export SCRAM_ARCH=slc7_amd64_gcc700
 
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
