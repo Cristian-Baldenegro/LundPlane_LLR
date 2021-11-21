@@ -30,4 +30,10 @@ it fetches datafiles from filelists.py
 The main Ntuplizer is in SMPJ/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc . This is where the angularities are being calculated at the moment.
 We could create additional tasks for the Lund plane task under SMPJ/AnalysisFW/plugins/
 
-there are a few macros in SMPJ/AnalysisFW/python/macros to start producing histograms <br/>
+there are a few macros in SMPJ/AnalysisFW/python/macros to start producing histograms.
+For example, to store basic histograms, apply high-level cuts, etc, you can run:<br/>
+
+root -l ProcessedData.C<br/>
+ProcessedData t; t.Loop()<br/>
+
+The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedData.h.
