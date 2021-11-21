@@ -3,7 +3,7 @@
 
 #ifndef QCDPFJetBTag_h
 #define QCDPFJetBTag_h
-#include "SMPJ/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
 #include "TLorentzVector.h"
 class QCDPFJetBTag : public QCDJet {
   public:

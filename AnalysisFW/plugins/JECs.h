@@ -3,7 +3,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "SMPJ/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
 
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"

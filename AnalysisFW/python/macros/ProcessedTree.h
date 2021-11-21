@@ -13,13 +13,13 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
-#include "SMPJ/AnalysisFW/interface/QCDEvent.h"
-#include "SMPJ/AnalysisFW/interface/QCDEventHdr.h"
-#include "SMPJ/AnalysisFW/interface/QCDMET.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEvent.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEventHdr.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDMET.h"
 #include "Math/GenVector/PxPyPzE4D.h"
-#include "SMPJ/AnalysisFW/interface/QCDJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDPFJetBTag.h"
-#include "SMPJ/AnalysisFW/interface/QCDPFJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDPFJetBTag.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h"
 
 class ProcessedTree {
 public :

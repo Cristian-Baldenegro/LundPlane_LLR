@@ -3,11 +3,11 @@
 
 #ifndef QCDEvent_h
 #define QCDEvent_h
-#include "SMPJ/AnalysisFW/interface/QCDJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDMET.h"
-#include "SMPJ/AnalysisFW/interface/QCDCaloJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDPFJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDEventHdr.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDMET.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDCaloJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEventHdr.h"
 #include "DataFormats/JetReco/interface/Jet.h"
 #include <vector>
 

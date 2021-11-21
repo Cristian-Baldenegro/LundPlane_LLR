@@ -19,7 +19,7 @@ cmsenv<br/>
 git cms-init<br/>
 git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR <br/>
 scram b -j<br/>
-cd SMPJ/AnalysisFW/python/ <br/>
+cd LundPlane_LLR/AnalysisFW/python/ <br/>
 
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 
@@ -37,3 +37,4 @@ root -l ProcessedData.C<br/>
 ProcessedData t; t.Loop()<br/>
 
 The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedData.h.
+

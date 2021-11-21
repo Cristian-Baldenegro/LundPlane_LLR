@@ -60,11 +60,11 @@
 #include "PhysicsTools/PatExamples/interface/BTagPerformance.h"
 #include "PhysicsTools/PatExamples/interface/PatBTagCommonHistos.h"
 
-#include "SMPJ/AnalysisFW/interface/QCDJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDEvent.h"
-#include "SMPJ/AnalysisFW/interface/QCDEventHdr.h"
-#include "SMPJ/AnalysisFW/interface/QCDPFJet.h"
-#include "SMPJ/AnalysisFW/interface/QCDMET.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEvent.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEventHdr.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDMET.h"
 
 #include <iostream>
 #include <sstream>
