@@ -33,8 +33,8 @@ We could create additional tasks for the Lund plane task under LundPlane_LLR/Ana
 there are a few macros in LundPlane_LLR/AnalysisFW/python/macros to start producing histograms.
 For example, to store basic histograms, apply high-level cuts, etc, you can run:<br/>
 
-root -l ProcessedData.C<br/>
-ProcessedData t; t.Loop()<br/>
+root -l ProcessedTree_data.C<br/>
+ProcessedTree_data t; t.Loop()<br/>
 
-The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedData.h.
+The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedTree_data.h.
 
