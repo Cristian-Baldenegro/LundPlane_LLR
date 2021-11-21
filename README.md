@@ -27,10 +27,10 @@ cmsRun cfg/ak416.py
 
 it fetches datafiles from filelists.py
 
-The main Ntuplizer is in SMPJ/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc . This is where the angularities are being calculated at the moment.
-We could create additional tasks for the Lund plane task under SMPJ/AnalysisFW/plugins/
+The main Ntuplizer is in LundPlane_LLR/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc . This is where the angularities are being calculated at the moment.
+We could create additional tasks for the Lund plane task under LundPlane_LLR/AnalysisFW/plugins/
 
-there are a few macros in SMPJ/AnalysisFW/python/macros to start producing histograms.
+there are a few macros in LundPlane_LLR/AnalysisFW/python/macros to start producing histograms.
 For example, to store basic histograms, apply high-level cuts, etc, you can run:<br/>
 
 root -l ProcessedData.C<br/>
