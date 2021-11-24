@@ -1,4 +1,4 @@
-<library   file="*.cc" name="LundPlane_LLR/AnalysisFWPlugins">
+<library   file="*.cc" name="LundPlane_LLRAnalysisFWPlugins">
 <use   name="RecoMET/METAlgorithms"/>
 <use   name="JetMETCorrections/Algorithms"/>
 <use   name="RecoJets/JetAlgorithms"/>
