@@ -21,9 +21,17 @@ git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR <br/>
 scram b -j<br/>
 cd LundPlane_LLR/AnalysisFW/python/ <br/>
 
+Then, you create the directory cfg_check<br/>
+
+mkdir cfg_check
+
+And create the configuration files for MC and data with <br/>
+
+python cfgProducer.py
+
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 
-cmsRun cfg/ak416.py
+cmsRun cfg_check/ak416.py
 
 it fetches datafiles from filelists.py
 
