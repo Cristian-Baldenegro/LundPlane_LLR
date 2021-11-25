@@ -7,26 +7,26 @@ miniAOD analysis framework for Lund jet plane Run-2 analysis. (starting from the
 Instructions for quick setup:
 
 ```
-LCG_lib_name=lib64 <br/>
-LCG_arch=x86_64 <br/>
-export SCRAM_ARCH=slc7_amd64_gcc700 <br/>
-export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch <br/>
-source $VO_CMS_SW_DIR/cmsset_default.sh <br/>
-source $VO_CMS_SW_DIR/crab3/crab.sh <br/>
-scram p -n C10620p1 CMSSW CMSSW_10_6_20_patch1 <br/>
-cd C10620p1/src <br/>
-cmsenv <br/>
-git cms-init <br/>
-git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR <br/>
-scram b -j <br/>
-cd LundPlane_LLR/AnalysisFW/python/ <br/>
+LCG_lib_name=lib64
+LCG_arch=x86_64
+export SCRAM_ARCH=slc7_amd64_gcc700
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+source $VO_CMS_SW_DIR/cmsset_default.sh
+source $VO_CMS_SW_DIR/crab3/crab.sh
+scram p -n C10620p1 CMSSW CMSSW_10_6_20_patch1
+cd C10620p1/src
+cmsenv
+git cms-init
+git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR
+scram b -j
+cd LundPlane_LLR/AnalysisFW/python/
 ```
 
-Then, you create the directory ```cfg_check``` <br/>
+Then, you create the directory ```cfg_check```
 
 ```mkdir cfg_check```
 
-And create the configuration files for MC and data with <br/>
+And create the configuration files for MC and data with
 
 ```
 python cfgProducer.py
@@ -45,8 +45,8 @@ We could create additional tasks for the Lund plane task under ```LundPlane_LLR/
 there are a few macros in ```LundPlane_LLR/AnalysisFW/python/macros``` to start producing basic histograms.
 For example, to store basic histograms, apply high-level cuts on jets, etc, you can run:<br/>
 
-```root -l ProcessedTree_data.C ``` <br/>
-```ProcessedTree_data t; t.Loop()``` <br/>
+```root -l ProcessedTree_data.C ```
+```ProcessedTree_data t; t.Loop()```
 
 The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ```ProcessedTree_data.h```.
 
