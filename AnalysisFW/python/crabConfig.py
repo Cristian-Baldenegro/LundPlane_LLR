@@ -56,13 +56,13 @@ config.General.transferOutputs = True
 config.General.transferLogs = False
 
 config.Data.inputDBS = 'global'
-config.Data.outLFNDirBase = '/store/user/hsiikone'
+config.Data.outLFNDirBase = '/store/user/cbaldene/output_crabjobs'
 config.Data.publication = False
 # Temporary flag for UL16 datasets in production
 config.Data.allowNonValidInputDataset = True
 
 config.JobType.pluginName = 'Analysis'
-config.Site.storageSite = 'T2_FI_HIP'
+config.Site.storageSite = 'T2_FR_GRIF_LLR'#'T2_FI_HIP'
 
 
 if __name__ == '__main__':
@@ -82,7 +82,7 @@ if __name__ == '__main__':
   if DTMode:
     config.General.workArea = 'runs_dt'
     config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 55 
+    config.Data.unitsPerJob = 5 
     config.JobType.psetName = 'cfg/'+Mode+RunYear+'.py'
     config.General.requestName = 'Run'+RunYear+Era+Tag+TagTag
     Ver = '1'
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # UL ReReco
     if RunYear=='16':
       # CMSSW 10_6_8_patch1: Era == Be/Bl/C/D/E/Fe/Fl/G/H
-      config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt'
+      config.Data.lumiMask = '/home/llr/cms/cbaldene/DATACERTS/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt'
       if Era=='Be':
         Campaign = '21Feb2020_ver1_UL2016'
         Era = 'B'
@@ -107,12 +107,12 @@ if __name__ == '__main__':
       if Era=='Fl': Era = 'F'
     elif RunYear=='17':
       # CMSSW 10_6_2: Era == B/C/D/E/F
-      config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSONmod.txt'
+      config.Data.lumiMask = '/home/llr/cms/cbaldene/DATACERTS/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt'
       Campaign = '09Aug2019_UL2017'
       if Era=='F': config.Data.unitsPerJob = 80
     elif RunYear=='18':
       # CMSSW 10_6_4_patch1: Era == A/B/C/D
-      config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'
+      config.Data.lumiMask = '/home/llr/cms/cbaldene/DATACERTS/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'
       Ver = '2'
       Campaign = '12Nov2019_UL2018'
       if Era=='A':   config.Data.unitsPerJob = 100
@@ -301,4 +301,3 @@ if __name__ == '__main__':
           Good = False
 
   if Good: submit(config)
-
