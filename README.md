@@ -7,22 +7,22 @@ miniAOD analysis framework for Lund jet plane Run-2 analysis. (starting from the
 Instructions for quick setup:
 
 ```
-LCG_lib_name=lib64<br/>
-LCG_arch=x86_64<br/>
-export SCRAM_ARCH=slc7_amd64_gcc700<br/>
-export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch<br/>
-source $VO_CMS_SW_DIR/cmsset_default.sh<br/>
-source $VO_CMS_SW_DIR/crab3/crab.sh<br/>
-scram p -n C10620p1 CMSSW CMSSW_10_6_20_patch1<br/>
-cd C10620p1/src<br/>
-cmsenv<br/>
-git cms-init<br/>
+LCG_lib_name=lib64 <br/>
+LCG_arch=x86_64 <br/>
+export SCRAM_ARCH=slc7_amd64_gcc700 <br/>
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch <br/>
+source $VO_CMS_SW_DIR/cmsset_default.sh <br/>
+source $VO_CMS_SW_DIR/crab3/crab.sh <br/>
+scram p -n C10620p1 CMSSW CMSSW_10_6_20_patch1 <br/>
+cd C10620p1/src <br/>
+cmsenv <br/>
+git cms-init <br/>
 git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR <br/>
-scram b -j<br/>
+scram b -j <br/>
 cd LundPlane_LLR/AnalysisFW/python/ <br/>
 ```
 
-Then, you create the directory ```cfg_check```<br/>
+Then, you create the directory ```cfg_check``` <br/>
 
 ```mkdir cfg_check```
 
@@ -33,8 +33,9 @@ python cfgProducer.py
 ```
 
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
-
+<br/>
 ```cmsRun cfg_check/ak416.py```
+<br/>
 
 it fetches single datafiles from ```filelists.py```
 
@@ -44,8 +45,8 @@ We could create additional tasks for the Lund plane task under ```LundPlane_LLR/
 there are a few macros in ```LundPlane_LLR/AnalysisFW/python/macros``` to start producing basic histograms.
 For example, to store basic histograms, apply high-level cuts on jets, etc, you can run:<br/>
 
-```root -l ProcessedTree_data.C ```<br/>
-```ProcessedTree_data t; t.Loop()```<br/>
+```root -l ProcessedTree_data.C ``` <br/>
+```ProcessedTree_data t; t.Loop()``` <br/>
 
 The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ```ProcessedTree_data.h```.
 
@@ -55,6 +56,6 @@ The best way to systematically submit jobs is via serialrun.sh. There, you can s
 
 After properly modifying ```serialrun.sh``` to your needs, do <br/>
 
-```bash serialrun.sh```<br/>
+```bash serialrun.sh``` <br/>
 
 This will run ```crabConfig.py``` with the settings of your choice. The crab-related files are created under the ```runs_dt``` or ```runs_mc``` directories for data or MC, respectively. The ```crabConfig.py``` file will pull the configuration files from the ```cfg_check``` directory, so make sure this folder exists and has the configuration files before running crab jobs.
