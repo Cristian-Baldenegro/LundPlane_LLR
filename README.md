@@ -34,20 +34,20 @@ python cfgProducer.py
 
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 
-cmsRun cfg_check/ak416.py
+```cmsRun cfg_check/ak416.py```
 
-it fetches datafiles from filelists.py
+it fetches single datafiles from ```filelists.py```
 
-The main Ntuplizer is in LundPlane_LLR/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc . This is where the angularities are being calculated at the moment.
-We could create additional tasks for the Lund plane task under LundPlane_LLR/AnalysisFW/plugins/
+The main Ntuplizer is in ```LundPlane_LLR/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc``` . The jet angularities are members of the QCDPFJet.h class defined in ```LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h``` This is where the angularities are being calculated at the moment.
+We could create additional tasks for the Lund plane task under ```LundPlane_LLR/AnalysisFW/plugins/```.
 
 there are a few macros in LundPlane_LLR/AnalysisFW/python/macros to start producing histograms.
 For example, to store basic histograms, apply high-level cuts, etc, you can run:<br/>
 
-root -l ProcessedTree_data.C<br/>
-ProcessedTree_data t; t.Loop()<br/>
+```root -l ProcessedTree_data.C ```<br/>
+```ProcessedTree_data t; t.Loop()```<br/>
 
-The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedTree_data.h.
+The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ```ProcessedTree_data.h```.
 
 Once you make sure that you are able to run over single miniAOD files, we can move on to executing crab jobs. To run the crab jobs, make sure you have the permissions to write in DPM. The main files are crabConfig.py and serialrun.sh <br/>
 
@@ -55,6 +55,6 @@ The best way to systematically submit jobs is via serialrun.sh. There, you can s
 
 After properly modifying serialrun.sh to your needs, do <br/>
 
-bash serialrun.sh<br/>
+```bash serialrun.sh```<br/>
 
-This will run crabConfig.py with the settings of your choice. The crab-related files are created under runs_dt or runs_mc for data or MC, respectively.
+This will run ```crabConfig.py``` with the settings of your choice. The crab-related files are created under the ```runs_dt``` or ```runs_mc``` directories for data or MC, respectively. The ```crabConfig.py``` file will pull the configuration files from the ```cfg_check``` directory.
