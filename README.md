@@ -46,3 +46,12 @@ ProcessedTree_data t; t.Loop()<br/>
 
 The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ProcessedTree_data.h.
 
+Once you make sure that you are able to run over single miniAOD files, we can move on to executing crab jobs. To run the crab jobs, make sure you have the permissions to write in DPM. The main files are crabConfig.py and serialrun.sh <br/>
+
+The best way to systematically submit jobs is via serialrun.sh. There, you can specify the year, the type of jets (ak4 jets), and the era (e.g., era B, C, D, E, ...) when running over data. For MC, there's an option for iterating over the different pThat or HT bins that is commented out.<br/>
+
+After properly modifying serialrun.sh to your needs, do <br/>
+
+bash serialrun.sh<br/>
+
+This will run crabConfig.py with the settings of your choice. The crab-related files are created under runs_dt or runs_mc for data or MC, respectively.
