@@ -6,7 +6,7 @@ miniAOD analysis framework for Lund jet plane Run-2 analysis. (starting from the
 
 Instructions for quick setup:
 
-
+```
 LCG_lib_name=lib64<br/>
 LCG_arch=x86_64<br/>
 export SCRAM_ARCH=slc7_amd64_gcc700<br/>
@@ -20,14 +20,17 @@ git cms-init<br/>
 git clone https://github.com/Cristian-Baldenegro/LundPlane_LLR <br/>
 scram b -j<br/>
 cd LundPlane_LLR/AnalysisFW/python/ <br/>
+```
 
-Then, you create the directory cfg_check<br/>
+Then, you create the directory ```cfg_check```<br/>
 
-mkdir cfg_check
+```mkdir cfg_check```
 
 And create the configuration files for MC and data with <br/>
 
+```
 python cfgProducer.py
+```
 
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 
