@@ -106,7 +106,7 @@ logging = [
 # jettype: 'ak4', 'ak8', 'zb'
 def producer(RunYear,era,jettype,Mode):
   add='PreVFP' if len(Mode)!=2 else ''
-  fname="cfg_check/"+jettype+RunYear+('' if era=='dt' else era)+add+".py"
+  fname="cfg/"+jettype+RunYear+('' if era=='dt' else era)+add+".py"
   with open(fname, 'w') as f:
     # Import lines
     for line in importer:
