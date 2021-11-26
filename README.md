@@ -38,7 +38,7 @@ If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 ```cmsRun cfg_check/ak416.py```
 <br/>
 
-it fetches single datafiles from ```filelists.py```
+it fetches single datafiles from ```filelists.py``` and creates a root file DATA.root with the selection requirements specified in the configuration file and in ```LundPlane_LLR/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc```.
 
 The main Ntuplizer is in ```LundPlane_LLR/AnalysisFW/plugins/ProcessedTreeProducerBTag.cc``` . The jet angularities are members of the QCDPFJet.h class defined in ```LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h``` This is where the angularities are being calculated at the moment.
 We could create additional tasks for the Lund plane task under ```LundPlane_LLR/AnalysisFW/plugins/```.
@@ -49,7 +49,7 @@ For example, to store basic histograms, apply high-level cuts on jets, etc, you 
 ```root -l ProcessedTree_data.C ```
 ```ProcessedTree_data t; t.Loop()```
 
-The output file "output.root" contains histograms with basic dijet distributions and angularities. The input file is fetched in ```ProcessedTree_data.h```.
+The output file "output.root" contains histograms with basic dijet distributions and angularities. The DATA.root input file must be fetched in ```ProcessedTree_data.h```.
 
 Once you make sure that you are able to run over single miniAOD files, we can move on to executing crab jobs. To run the crab jobs, make sure you have the permissions to write in DPM. The main files are ```crabConfig.py``` and ```serialrun.sh``` <br/>
 
