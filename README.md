@@ -22,16 +22,17 @@ scram b -j
 cd LundPlane_LLR/AnalysisFW/python/
 ```
 
-Then, you create the directory ```cfg_check```
+Then, you create the directory ```cfg```
 
-```mkdir cfg_check```
+```mkdir cfg```
 
-And create the configuration files for MC and data with
+And create the configuration files under cfg for MC and data with the cfgProducer.py,
 
 ```
 python cfgProducer.py
 ```
 
+These will be the configuration files used for crabJobs eventually.
 If you want to run over data for anti-kT R = 0.4 jets in 2016, you do:
 <br/>
 ```cmsRun cfg_check/ak416.py```
