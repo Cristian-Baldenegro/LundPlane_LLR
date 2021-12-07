@@ -5,13 +5,19 @@
 #include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDPFJetBTag.h"
 #include "TLorentzVector.h"
-class QCDGenJet : public QCDPFJetBTag {
+class QCDGenJet
+{
    public:
+     typedef reco::Particle::LorentzVector LorentzVector;
+
+
      //------------ Constructor ------------------------------
      QCDGenJet() {lha_=-1; width_=-1; thrust_= -1; ptD2_ = -1; multiplicity_ = -1; lha_charged_=-1; width_charged_=-1; thrust_charged_= -1; ptD2_charged_ = -1; multiplicity_charged_ = -1;}
      //------------ Destructor -------------------------------
      ~QCDGenJet() {}
      //------------ Set methods ------------------------------
+
+     void setP4(LorentzVector fP4)               { P4_ = fP4; }
      void setLHA(float flha){ lha_ = flha;}
      void setWidth(float fwidth){ width_ = fwidth;}
      void setThrust(float fthrust){ thrust_ = fthrust;}
@@ -23,6 +29,7 @@ class QCDGenJet : public QCDPFJetBTag {
      void setPtD2_charged(float fptD2_charged){ ptD2_charged_ = fptD2_charged;}
      void setMultiplicity_charged(int fmultiplicity_charged){ multiplicity_charged_ = fmultiplicity_charged;}
 
+     const LorentzVector& p4()    const {return P4_;}
      float lha()   const {return lha_;}
      float width()   const {return width_;}
      float thrust()   const {return thrust_;}
@@ -37,6 +44,8 @@ class QCDGenJet : public QCDPFJetBTag {
      int multiplicity_charged()   const {return multiplicity_charged_;}
 
    private:
+     //------ jet 4-momentum vector------------------
+     LorentzVector P4_;
      //---- lha angularity ----
      float lha_;
      //---- width ----
