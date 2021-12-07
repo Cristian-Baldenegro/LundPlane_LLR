@@ -6,6 +6,9 @@
 #include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDPFJetBTag.h"
 #include "TLorentzVector.h"
+#include <vector>
+
+using std::vector;
 class QCDPFJet : public QCDPFJetBTag {
    public:
      //------------ Constructor ------------------------------
@@ -14,7 +17,6 @@ class QCDPFJet : public QCDPFJetBTag {
      ~QCDPFJet() {}
      //------------ Set methods ------------------------------
      void setFrac(float fchf, float fnhf, float fnemf, float fcemf, float fmuf)  {chf_ = fchf; nhf_ = fnhf; nemf_ = fnemf; cemf_ = fcemf; muf_ = fmuf;}
-
      void setLHA(float flha){ lha_ = flha;}
      void setWidth(float fwidth){ width_ = fwidth;}
      void setThrust(float fthrust){ thrust_ = fthrust;}
@@ -33,7 +35,8 @@ class QCDPFJet : public QCDPFJetBTag {
      void setVtxInfo(int mpuTrk, int mlvTrk, int mjtTrk) { mpuTrk_ = mpuTrk; mlvTrk_ = mlvTrk; mjtTrk_ = mjtTrk;} // Juska
      void setHO(float hof) {hof_ = hof;} // Juska
      void SetPUJetId(float pujid) { pujid_ = pujid; }
-
+     void setKt(vector<double> dkt){ kT_ = dkt;}
+     void setTheta(vector<double> dtheta){ theta_ = dtheta;}
      //------------ Get methods ------------------------------
      float betaPrime() const {return betaPrime_;}
      float chf()      const {return chf_;}
@@ -120,9 +123,6 @@ class QCDPFJet : public QCDPFJetBTag {
      float hof_; // Hadronic Outer energy fraction
 
 
-
-
-   private:
      //---- lha angularity ----
      float lha_;
      //---- width ----
@@ -144,6 +144,9 @@ class QCDPFJet : public QCDPFJetBTag {
      float ptD2_charged_;
      //---- multiplicity ---
      int multiplicity_charged_;
+
+     vector<double> kT_;
+     vector<double> theta_; 
 
      float pujid_;
 };
