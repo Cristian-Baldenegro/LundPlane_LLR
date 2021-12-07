@@ -31,15 +31,5 @@ class QCDPFJetBTag : public QCDJet {
     int partonFlavour_;
     int partonFlavourPhysicsDef_;
     int hadronFlavour_;
-
-    void setJetAngularities (float fLHA, float fWidth, int fThrust, float fPtD, int fMult) { LHA_ = fLHA; Width_ = fWidth; Thrust_ = fThrust; PtD_ = fPtD; Mult_ = fMult;}
-// these should be the angularities of SMP-20-010, arxiv.org/abs/2109.03340
-//
-    float LHA_;
-    float Width_;
-    float Thrust_;
-    float PtD_;
-    int   Mult_;
-
 };
 #endif

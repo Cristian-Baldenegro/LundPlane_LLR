@@ -61,6 +61,7 @@
 #include "PhysicsTools/PatExamples/interface/PatBTagCommonHistos.h"
 
 #include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
+#include "LundPlane_LLR/AnalysisFW/interface/QCDGenJet.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDEvent.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDEventHdr.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h"
@@ -221,9 +222,22 @@ private:
   vector<int>           mGenFlavourHadr;
   vector<int>           mGenFlavourPhys;
   vector<float>         mGenBPt;
+  vector<float>         mLHA;
+  vector<float>         mWidth;
+  vector<float>         mThrust;
+  vector<float>         mPtD2;
+  vector<float>         mMultiplicity;
+
+  vector<float>         mLHA_charged;
+  vector<float>         mWidth_charged;
+  vector<float>         mThrust_charged;
+  vector<float>         mPtD2_charged;
+  vector<float>         mMultiplicity_charged;
+
   vector<LorentzVector> mGenJets;
   map<int,int>          mGenJetPhysFlav;
   map<int,int>          mGenJetAlgoFlav;
+  vector<QCDGenJet>     qGenJets;
 
   bool                  mRedoPhysDef;
   bool                  mRedoAlgoDef;
@@ -469,8 +483,6 @@ ProcessedTreeProducerBTag::ProcessedTreeProducerBTag(edm::ParameterSet const& cf
     mQGPtDToken = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
   }
 
-
-// angularities
 
   if (mIsMCarlo and mMCType==0) {
     mGenEventSrc_     = edm::InputTag("generator");
@@ -989,10 +1001,25 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     auto j = theJetFlavourInfos->begin();
     auto k = theJetFlavourInfosPhys->begin();
     mGenJets.clear();
+    mLHA.clear();
+    mWidth.clear();
+    mThrust.clear();
+    mPtD2.clear();
+    mMultiplicity.clear();
+
+    mLHA_charged.clear();
+    mWidth_charged.clear();
+    mThrust_charged.clear();
+    mPtD2_charged.clear();
+    mMultiplicity_charged.clear();
+
+
     mGenFlavour.clear();
     mGenFlavourHadr.clear();
     mGenFlavourPhys.clear();
     mGenBPt.clear();
+    qGenJets.clear();
+
     for (;igen!=genJets->end() and j!=theJetFlavourInfos->end() and k!=theJetFlavourInfosPhys->end();++igen,++j,++k) {
       if (fabs(igen->eta()) > mMaxEta) continue;
 
@@ -1000,6 +1027,130 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       auto bInfo = k->second;
 
       mGenJets.push_back(igen->p4());
+
+      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
+      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
+
+       // Loop through the PF candidates within the jet.
+       for (auto pidx = 0u; pidx < igen->numberOfDaughters(); ++pidx)
+      {  if (igen->pt() < 20) continue;
+         auto part = dynamic_cast<const pat::PackedGenParticle*>(igen->daughter(pidx));
+/*         if (part->charge()!=0)  //charged-particles
+         {
+           if (part->pt() < 1) continue; // charged-particles w/ pT > 1 GeV
+         }
+         else if (part->charge() == 0) //neutral particles
+         {
+          if(part->pt() < 2.0) continue; //min pT > 2 GeV for neutral particles
+         }
+       if(part->pt() > 1)
+       {*/
+         float deta = part->eta() - igen->eta();
+         float dphi = reco::deltaPhi(part->phi(), igen->phi());
+         float dr = sqrt(deta*deta+dphi*dphi); // distance of the PF particle w.r.t. to the jet
+         float r = 0.4; //jet distance parameter R = 0.4
+         float jetPt = igen->pt(); //jet with JES correction
+         float partPt = part->pt(); //pf candidate pT
+
+         lha += (partPt/jetPt)*sqrt(dr/r);
+         width += (partPt/jetPt)*dr/r;
+         thrust += (partPt/jetPt)*(dr/r)*(dr/r);
+         ptD2 += (partPt/jetPt)*(partPt/jetPt);
+         if (part->pt() > 1) multiplicity += 1;
+
+         if (part->charge()!=0)
+         {
+         lha_charged += (partPt/jetPt)*sqrt(dr/r);
+         width_charged += (partPt/jetPt)*dr/r;
+         thrust_charged += (partPt/jetPt)*(dr/r)*(dr/r);
+         ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
+         if (part->pt() > 1) multiplicity_charged += 1;
+         }
+
+       // }
+      }
+      mLHA.push_back(lha);
+      mWidth.push_back(width);
+      mThrust.push_back(thrust);
+      mPtD2.push_back(ptD2);
+      mMultiplicity.push_back(multiplicity);
+
+      mLHA_charged.push_back(lha_charged);
+      mWidth_charged.push_back(width_charged);
+      mThrust_charged.push_back(thrust_charged);
+      mPtD2_charged.push_back(ptD2_charged);
+      mMultiplicity_charged.push_back(multiplicity_charged);
+
+
+
+//      qcdGenJet.setP4(igen->p4());
+
+/*      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
+      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
+      
+      // jet angularities calculation, hard coded for the moment just for tests
+
+      bool validGenParticle = false;
+
+      if (mAK4)
+      {
+       // Loop through the PF candidates within the jet.
+       for (auto pidx = 0u; pidx < igen->numberOfDaughters(); ++pidx) {
+         auto part = dynamic_cast<const pat::PackedGenParticle*>(igen->daughter(pidx));
+         if (part->charge()!=0)  //charged-particles
+         {
+           if (part->pt() < 1) continue; // charged-particles w/ pT > 1 GeV
+           validGenParticle = true;
+         }
+         else if (part->charge() == 0) //neutral particles
+         {
+          if(part->pt() < 2.0) continue; //min pT > 2 GeV for neutral particles
+          validGenParticle = true;
+         }
+
+       if(validGenParticle && part->pt() > 1 && igen->pt() > 20)
+       {
+
+         float deta = part->eta() - igen->eta();
+         float dphi = reco::deltaPhi(part->phi(), igen->phi());
+         float dr = sqrt(deta*deta+dphi*dphi); // distance of the PF particle w.r.t. to the jet
+         float r = 0.4; //jet distance parameter R = 0.4
+         float jetPt = igen->pt(); //jet with JES correction
+         float partPt = part->pt(); //pf candidate pT
+
+         lha += (partPt/jetPt)*sqrt(dr/r);
+         width += (partPt/jetPt)*dr/r;
+         thrust += (partPt/jetPt)*(dr/r)*(dr/r);
+         ptD2 += (partPt/jetPt)*(partPt/jetPt);
+         multiplicity += 1;
+
+         if (part->charge()!=0)
+         {
+         lha_charged += (partPt/jetPt)*sqrt(dr/r);
+         width_charged += (partPt/jetPt)*dr/r;
+         thrust_charged += (partPt/jetPt)*(dr/r)*(dr/r);
+         ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
+         multiplicity_charged += 1;
+         }
+        }
+       validGenParticle = false;
+      }
+
+    if (lha < 1 && lha > 0) qcdGenJet.setLHA(lha);
+    if (width < 1 && width > 0) qcdGenJet.setWidth(width);
+    if (thrust < 1 && thrust > 0) qcdGenJet.setThrust(thrust);
+    if (ptD2 < 1 && ptD2 > 0) qcdGenJet.setPtD2(ptD2);
+    if (multiplicity >= 0) qcdGenJet.setMultiplicity(multiplicity);
+
+    if (lha_charged < 1 && lha_charged > 0) qcdGenJet.setLHA_charged(lha_charged);
+    if (width_charged < 1 && width_charged > 0) qcdGenJet.setWidth_charged(width_charged);
+    if (thrust_charged < 1 && thrust_charged > 0) qcdGenJet.setThrust_charged(thrust_charged);
+    if (ptD2_charged < 1 && ptD2_charged > 0) qcdGenJet.setPtD2_charged(ptD2_charged);
+    if (multiplicity_charged >= 0) qcdGenJet.setMultiplicity_charged(multiplicity_charged);
+
+    }
+*/
+
       mGenFlavour.push_back(aInfo.getPartonFlavour());
       mGenFlavourHadr.push_back(aInfo.getHadronFlavour());
       mGenFlavourPhys.push_back(bInfo.getPartonFlavour());
@@ -1105,7 +1256,8 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
   int maxGenMatch = -1;
   for (auto ijet=patJets->begin(); ijet!=patJets->end(); ++ijet){
 
-  float lha = 0.0, width = 0.0, thrust = 0;
+      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
+      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
 
     // Preselection
     if (!ijet->isPFJet()) continue;
@@ -1165,39 +1317,47 @@ bool validPFinJet = false;
       // Loop through the PF candidates within the jet.
       for (auto pidx = 0u; pidx < ijet->numberOfDaughters(); ++pidx) {
         auto part = dynamic_cast<const pat::PackedCandidate*>(ijet->daughter(pidx));
-        if (part->charge()!=0)  //charged-particles
+
+        if (part->charge()!=0 && part->hasTrackDetails() )  //charged-particles
         {
-          if (part->pt() < 1) continue; // charged-particles w/ pT > 1 GeV
+//          if (part->pt() < 0.2) continue; // charged-particles w/ pT > 1 GeV
           if((part->dz()*part->dz())/(part->dzError()*part->dzError()) > 25. ) continue; //track quality cut
-          if(!(part->fromPV() > 1 && part->trackHighPurity())) continue; // only high-purity tracks that satisfy PVTight conditions are considered
-          validPFinJet = true;
+//          if(!(part->fromPV() > 1 && part->trackHighPurity())) continue; // only high-purity tracks that satisfy PVTight conditions are considered
+          validPFinJet = true;          
         }
         else if (part->charge() == 0) //neutral particles
         {
-         if(part->pt() < 1.0) continue;
+//         if(part->pt() < 2.0) continue;
          validPFinJet = true;
         }
 
-       if(validPFinJet && part->pt() > 1 && ijet->pt() > 20)
+       if(validPFinJet && ijet->pt() > 20)
        {
-
          float deta = part->eta() - ijet->eta();
          float dphi = reco::deltaPhi(part->phi(), ijet->phi());
          float dr = sqrt(deta*deta+dphi*dphi); // distance of the PF particle w.r.t. to the jet
          float r = 0.4; //jet distance parameter R = 0.4
          float jetPt = ijet->pt(); //jet with JES correction
-         float partPt = part->pt(); //pf candidate pT
+         float partPt = part->pt()*part->puppiWeight(); //pf candidate pT
 
          lha += (partPt/jetPt)*sqrt(dr/r);
          width += (partPt/jetPt)*dr/r;
-         thrust += (partPt/jetPt)*(dr/r)*(dr/r); 
+         thrust += (partPt/jetPt)*(dr/r)*(dr/r);
+         ptD2 += (partPt/jetPt)*(partPt/jetPt);
+         if (part->pt()*part->puppiWeight() > 1) multiplicity += 1;
+
+         if (part->charge()!=0)
+         {
+           lha_charged += (partPt/jetPt)*sqrt(dr/r);
+           width_charged += (partPt/jetPt)*dr/r;
+           thrust_charged += (partPt/jetPt)*(dr/r)*(dr/r);
+           ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
+           if (part->pt()*part->puppiWeight() > 1) multiplicity_charged += 1;
+         }
         }
+       validPFinJet = false;
       }
     }
-
-
-
-
 
     QCDPFJet qcdJet;
 
@@ -1205,10 +1365,16 @@ bool validPFinJet = false;
     float bPrime = (pue/ijet->energy())*scale; 
     qcdJet.setBetaPrime(bPrime);
     if (lha < 1 && lha > 0) qcdJet.setLHA(lha);
-
     if (width < 1 && width > 0) qcdJet.setWidth(width);
-
     if (thrust < 1 && thrust > 0) qcdJet.setThrust(thrust);
+    if (ptD2 < 1 && ptD2 > 0) qcdJet.setPtD2(ptD2);
+    if (multiplicity > 0) qcdJet.setMultiplicity(multiplicity);
+
+    if (lha_charged < 1 && lha_charged > 0) qcdJet.setLHA_charged(lha_charged);
+    if (width_charged < 1 && width_charged > 0) qcdJet.setWidth_charged(width_charged);
+    if (thrust_charged < 1 && thrust_charged > 0) qcdJet.setThrust_charged(thrust_charged);
+    if (ptD2_charged < 1 && ptD2_charged > 0) qcdJet.setPtD2_charged(ptD2_charged);
+    if (multiplicity_charged > 0) qcdJet.setMultiplicity_charged(multiplicity_charged);
      
     // JEC uncertainty
     double unc(0.0);
@@ -1260,14 +1426,16 @@ bool validPFinJet = false;
 
     // For the UL campaigns, the Jet IDs are provided in a purely hard-coded format:
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVUL
-    if (abseta <= 2.6)
-      tightID = cemf<0.8 and cm>0 and chf>0 and npr>1 and nemf<0.9 and muf<0.8 and nhf<0.9;
-    else if (abseta <= 2.7)
-      tightID = cemf<0.8 and cm>0 and nemf<0.99 and muf<0.8 and nhf<0.9;
-    else if (abseta <= 3.0)
-      tightID = nemf<0.99 and nemf>0.01 and nm>1;
-    else
-      tightID = nemf<0.90 and nm>10 and nhf>0.2;
+    //
+    // These jet ID requirements correspond to AK4 PUPPI jets in 2016
+    if (abseta <= 2.4)
+      tightID = cemf<0.8 and cm>0 and chf>0 and nemf<0.9 and muf<0.8 and nhf<0.9;
+    else if (abseta > 2.4 && abseta <= 2.7)
+      tightID = nemf<0.99 and nhf<0.98;
+    else if (abseta > 2.7 && abseta <= 3.0 )
+      tightID = npr>=1;
+    else if (abseta > 3.0 && abseta <= 5.0)
+      tightID = nemf<0.90 and npr>2;
     // Provided for backwards compatibility
     bool looseID = tightID;
      
@@ -1365,6 +1533,8 @@ bool validPFinJet = false;
   mEvent->setPFJetsCHS(qPFJets);
 
   if (mIsMCarlo) {
+
+    QCDGenJet qcdGenJet;
     // Find the first jet with too small pt (but include all matched gen jets)
     unsigned starter = (maxGenMatch==-1 ? 0 : maxGenMatch+1);
     unsigned limit = mGenJets.size();
@@ -1377,14 +1547,34 @@ bool validPFinJet = false;
     }
     // Remove all the trailing gen info
     while (mGenJets.size()>limit) {
+//      qGenJets.pop_back();
       mGenJets.pop_back();
+      mLHA.pop_back();
       mGenBPt.pop_back();
       mGenFlavour.pop_back();
       mGenFlavourHadr.pop_back();
       mGenFlavourPhys.pop_back();
     }
+
+    for (unsigned igen = 0; igen<mGenJets.size(); ++igen)
+    {
+        qcdGenJet.setP4(mGenJets[igen]);
+        qcdGenJet.setLHA(mLHA[igen]); 
+        qcdGenJet.setWidth(mWidth[igen]);
+        qcdGenJet.setThrust(mThrust[igen]);
+        qcdGenJet.setPtD2(mPtD2[igen]);
+        qcdGenJet.setMultiplicity(mMultiplicity[igen]);
+
+        qcdGenJet.setLHA_charged(mLHA_charged[igen]);
+        qcdGenJet.setWidth_charged(mWidth_charged[igen]);
+        qcdGenJet.setThrust_charged(mThrust_charged[igen]);
+        qcdGenJet.setPtD2_charged(mPtD2_charged[igen]);
+        qcdGenJet.setMultiplicity_charged(mMultiplicity_charged[igen]);
+        qGenJets.push_back(qcdGenJet);
+    }
+//  qcdGenJet.setP4(igen->p4());
     // Save only the interesting gen info
-    mEvent->setGenJets(mGenJets);
+    mEvent->setGenJets(qGenJets);
     mEvent->setGenBPt(mGenBPt);
     mEvent->setGenFlavour(mGenFlavour);
     mEvent->setGenFlavourHadron(mGenFlavourHadr);

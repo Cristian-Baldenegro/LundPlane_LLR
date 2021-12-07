@@ -5,7 +5,7 @@ QCDEvent::QCDEvent()
   HLTObj_.clear();
   L1Obj_.clear();
   PFJetsCHS_.clear();
-  GenJets_.clear();
+  QCDGenJets_.clear();
 }
 //---------------------------------------------------
 QCDEvent::~QCDEvent() {}
@@ -18,11 +18,11 @@ void QCDEvent::setPFJetsCHS(const std::vector<QCDPFJet>& fPFJetsCHS)
   }
 }
 //---------------------------------------------------
-void QCDEvent::setGenJets(const std::vector<LorentzVector>& fGenJets)
+void QCDEvent::setGenJets(const std::vector<QCDGenJet>& fQCDGenJets)
 {
-  GenJets_.clear();
-  for(unsigned i=0;i<fGenJets.size();i++) {
-    GenJets_.push_back(fGenJets[i]);
+  QCDGenJets_.clear();
+  for(unsigned i=0;i<fQCDGenJets.size();i++) {
+    QCDGenJets_.push_back(fQCDGenJets[i]);
   }
 }
 //---------------------------------------------------
@@ -74,15 +74,7 @@ int QCDEvent::nGoodJets(int unc, int id, float ymax, float ptmin, std::vector<QC
   }
   return counter;
 }
-//---------------------------------------------------
-float QCDEvent::genmjj()
-{
-  if (GenJets_.size() < 2)
-    return 0.0;
-  else {
-    return (GenJets_[0]+GenJets_[1]).mass();
-  }
-}
+
 //---------------------------------------------------
 float QCDEvent::pfmjj()
 {
