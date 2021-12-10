@@ -67,6 +67,12 @@
 #include "LundPlane_LLR/AnalysisFW/interface/QCDPFJet.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDMET.h"
 
+#include "fastjet/contrib/Njettiness.hh"
+#include "fastjet/AreaDefinition.hh"
+#include "fastjet/ClusterSequence.hh"
+#include "fastjet/ClusterSequenceArea.hh"
+#include "fastjet/contrib/SoftDrop.hh"
+
 #include <iostream>
 #include <sstream>
 #include <istream>
@@ -81,6 +87,43 @@
 #include <cassert>
 #include <regex>
 #include <TLorentzVector.h>
+
+#include <type_traits>
+#include <typeinfo>
+#ifndef _MSC_VER
+#   include <cxxabi.h>
+#endif
+#include <memory>
+#include <string>
+#include <cstdlib>
+
+template <class T>
+std::string
+type_name()
+{
+    typedef typename std::remove_reference<T>::type TR;
+    std::unique_ptr<char, void(*)(void*)> own
+           (
+#ifndef _MSC_VER
+                abi::__cxa_demangle(typeid(TR).name(), nullptr,
+                                           nullptr, nullptr),
+#else
+                nullptr,
+#endif
+                std::free
+           );
+    std::string r = own != nullptr ? own.get() : typeid(TR).name();
+    if (std::is_const<TR>::value)
+        r += " const";
+    if (std::is_volatile<TR>::value)
+        r += " volatile";
+    if (std::is_lvalue_reference<T>::value)
+        r += "&";
+    else if (std::is_rvalue_reference<T>::value)
+        r += "&&";
+    return r;
+}
+
 
 using std::cout;
 using std::endl;
@@ -245,7 +288,7 @@ private:
   // Private functions for various purposes
   bool trigUpdate(const vector<string> &tNames, vector<int> &tIndex, bool active);
   bool trigCheck(const edm::TriggerNames &names, const vector<string> &tNames, vector<int> &tIndex, bool active);
-  
+ 
   // Sort the QCDPFJet collection according to pt
   static bool sort_pfjets(QCDPFJet j1, QCDPFJet j2) { return j1.ptCor() > j2.ptCor(); }
   
@@ -316,6 +359,65 @@ private:
     }
     return make_pair(imin,rmin);
   }
+  template<typename T>
+  void IterativeDeclusteringDet(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+   {
+
+        fastjet::PseudoJet myjet;
+        myjet.reset(jet.p4().px(),jet.p4().py(),jet.p4().pz(),jet.p4().e());
+
+          std::vector<fastjet::PseudoJet> particles;
+
+        for (auto pidx = 0u; pidx < jet.numberOfDaughters(); ++pidx)
+        {
+         auto part = dynamic_cast<const pat::PackedCandidate*>(jet.daughter(pidx));
+
+         if (part->charge()!=0 && part->hasTrackDetails() )  //charged-particles
+         {
+           if((part->dz()*part->dz())/(part->dzError()*part->dzError()) > 25. ) continue; //track quality cut
+         } 
+         if (part->pt()*part->puppiWeight() < 1) continue;
+//         if (part->pt() > 1) kt.push_back(part->pt());
+
+         particles.push_back(fastjet::PseudoJet(part->px()*part->puppiWeight(), part->py()*part->puppiWeight(), part->pz()*part->puppiWeight(), part->energy()*part->puppiWeight() ));
+        }       
+
+         fastjet::JetDefinition fJetDef(fastjet::cambridge_algorithm,1,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+
+      try {
+
+         fastjet::GhostedAreaSpec ghost_spec(1, 1, 0.05);
+         fastjet::AreaDefinition fAreaDef(fastjet::passive_area, ghost_spec);
+
+         fastjet::ClusterSequenceArea fClustSeqSA(particles, fJetDef, fAreaDef);
+
+         std::vector<fastjet::PseudoJet> fOutputJets;
+         fOutputJets.clear();
+         fOutputJets = fClustSeqSA.inclusive_jets(0);
+  
+         fastjet::PseudoJet jj;
+         fastjet::PseudoJet j1;
+         fastjet::PseudoJet j2;
+         bool valid_jet = false;
+
+ 
+         if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
+         if (valid_jet == true)
+         {                                                                                                                 
+           while(jj.has_parents(j1,j2))
+          {
+                   if (j1.perp() < j2.perp()) swap(j1, j2);
+     
+                   theta.push_back(j1.delta_R(j2));
+                   kt.push_back(j2.perp() * sin(j1.delta_R(j2)));
+                   z.push_back(j2.perp() /jj.perp());
+                   
+                   jj = j1;
+          }
+        }
+       } catch (fastjet::Error) {}
+       
+}//, vector<double> & kt, vector<double> & theta);
 
   // Find the gen jet best matching to the current jet
   template<typename T>      
@@ -499,7 +601,7 @@ ProcessedTreeProducerBTag::ProcessedTreeProducerBTag(edm::ParameterSet const& cf
 
   mTree = fs->make<TTree>("ProcessedTree","ProcessedTree");
   mEvent = new QCDEvent();
-  mTree->Branch("events","QCDEvent",&mEvent);
+  mTree->Branch("events","QCDEvent",&mEvent, 32000, 0);
   mTriggerNamesHisto = fs->make<TH1F>("TriggerNames","TriggerNames",1,0,1);
   mTriggerNamesHisto->SetBit(TH1::kUserContour);  
   mTriggerPassHisto = fs->make<TH1F>("TriggerPass","TriggerPass",1,0,1);
@@ -596,6 +698,9 @@ bool ProcessedTreeProducerBTag::trigUpdate(const vector<string> &tNames, vector<
   }
   return true;
 }
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 bool ProcessedTreeProducerBTag::trigCheck(const edm::TriggerNames &names, const vector<string> &tNames, vector<int> &tIndex, bool active) {
   // Go trough all monitored triggers and check that these have the same names.
@@ -628,6 +733,8 @@ bool ProcessedTreeProducerBTag::trigCheck(const edm::TriggerNames &names, const 
   cout << (active ? "Actively" : "Passively") << " monitored triggers checked!" << endl;
   return true;
 }
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup const& iSetup) {
   // If the trigger information is not satisfactory, we should not enter the event analysis.
@@ -1081,76 +1188,6 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       mPtD2_charged.push_back(ptD2_charged);
       mMultiplicity_charged.push_back(multiplicity_charged);
 
-
-
-//      qcdGenJet.setP4(igen->p4());
-
-/*      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
-      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
-      
-      // jet angularities calculation, hard coded for the moment just for tests
-
-      bool validGenParticle = false;
-
-      if (mAK4)
-      {
-       // Loop through the PF candidates within the jet.
-       for (auto pidx = 0u; pidx < igen->numberOfDaughters(); ++pidx) {
-         auto part = dynamic_cast<const pat::PackedGenParticle*>(igen->daughter(pidx));
-         if (part->charge()!=0)  //charged-particles
-         {
-           if (part->pt() < 1) continue; // charged-particles w/ pT > 1 GeV
-           validGenParticle = true;
-         }
-         else if (part->charge() == 0) //neutral particles
-         {
-          if(part->pt() < 2.0) continue; //min pT > 2 GeV for neutral particles
-          validGenParticle = true;
-         }
-
-       if(validGenParticle && part->pt() > 1 && igen->pt() > 20)
-       {
-
-         float deta = part->eta() - igen->eta();
-         float dphi = reco::deltaPhi(part->phi(), igen->phi());
-         float dr = sqrt(deta*deta+dphi*dphi); // distance of the PF particle w.r.t. to the jet
-         float r = 0.4; //jet distance parameter R = 0.4
-         float jetPt = igen->pt(); //jet with JES correction
-         float partPt = part->pt(); //pf candidate pT
-
-         lha += (partPt/jetPt)*sqrt(dr/r);
-         width += (partPt/jetPt)*dr/r;
-         thrust += (partPt/jetPt)*(dr/r)*(dr/r);
-         ptD2 += (partPt/jetPt)*(partPt/jetPt);
-         multiplicity += 1;
-
-         if (part->charge()!=0)
-         {
-         lha_charged += (partPt/jetPt)*sqrt(dr/r);
-         width_charged += (partPt/jetPt)*dr/r;
-         thrust_charged += (partPt/jetPt)*(dr/r)*(dr/r);
-         ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
-         multiplicity_charged += 1;
-         }
-        }
-       validGenParticle = false;
-      }
-
-    if (lha < 1 && lha > 0) qcdGenJet.setLHA(lha);
-    if (width < 1 && width > 0) qcdGenJet.setWidth(width);
-    if (thrust < 1 && thrust > 0) qcdGenJet.setThrust(thrust);
-    if (ptD2 < 1 && ptD2 > 0) qcdGenJet.setPtD2(ptD2);
-    if (multiplicity >= 0) qcdGenJet.setMultiplicity(multiplicity);
-
-    if (lha_charged < 1 && lha_charged > 0) qcdGenJet.setLHA_charged(lha_charged);
-    if (width_charged < 1 && width_charged > 0) qcdGenJet.setWidth_charged(width_charged);
-    if (thrust_charged < 1 && thrust_charged > 0) qcdGenJet.setThrust_charged(thrust_charged);
-    if (ptD2_charged < 1 && ptD2_charged > 0) qcdGenJet.setPtD2_charged(ptD2_charged);
-    if (multiplicity_charged >= 0) qcdGenJet.setMultiplicity_charged(multiplicity_charged);
-
-    }
-*/
-
       mGenFlavour.push_back(aInfo.getPartonFlavour());
       mGenFlavourHadr.push_back(aInfo.getHadronFlavour());
       mGenFlavourPhys.push_back(bInfo.getPartonFlavour());
@@ -1310,7 +1347,8 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 
 // jet angularities calculation, hard coded for the moment just for tests
 
-bool validPFinJet = false;
+    bool validPFinJet = false;
+
 
     if (mAK4)
     {
@@ -1359,7 +1397,20 @@ bool validPFinJet = false;
       }
     }
 
+    vector<double> kt;
+    vector<double> theta;
+    vector<double> z;
+    fastjet::PseudoJet *sub1Det = new fastjet::PseudoJet();
+    fastjet::PseudoJet *sub2Det = new fastjet::PseudoJet();
+
+
+    IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z);
+
+
     QCDPFJet qcdJet;
+    qcdJet.setKt(kt);
+    qcdJet.setTheta(theta);
+    qcdJet.setZ(z);
 
     // The fraction of CHS-removed PU (defined similarly as the other fractions, w.r.t. unscaled jet energy).
     float bPrime = (pue/ijet->energy())*scale; 
