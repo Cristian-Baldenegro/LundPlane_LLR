@@ -5,6 +5,9 @@
 #include "LundPlane_LLR/AnalysisFW/interface/QCDJet.h"
 #include "LundPlane_LLR/AnalysisFW/interface/QCDPFJetBTag.h"
 #include "TLorentzVector.h"
+
+#include <vector>
+using std::vector;
 class QCDGenJet
 {
    public:
@@ -43,6 +46,33 @@ class QCDGenJet
      float ptD2_charged()   const {return ptD2_charged_;}
      int multiplicity_charged()   const {return multiplicity_charged_;}
 
+
+     void setZ(vector<double> dz){ z_ = dz;}
+     void setKt(vector<double> dkt){ kT_ = dkt;}
+     void setTheta(vector<double> dtheta){ theta_ = dtheta;}
+//     void setEfficiency(vector<double> defficiency){ efficiency_ = defficiency;}
+
+     void setZ_charged(vector<double> dz_charged){ z_charged_ = dz_charged;}
+     void setKt_charged(vector<double> dkt_charged){ kT_charged_ = dkt_charged;}
+     void setTheta_charged(vector<double> dtheta_charged){ theta_charged_ = dtheta_charged;}
+
+
+     vector<double> z()    const{return z_;}
+     vector<double> kT()    const{return kT_;}
+     vector<double> theta()    const{return theta_;}
+
+     vector<double> z_charged()    const{return z_charged_;}
+     vector<double> kT_charged()    const{return kT_charged_;}
+     vector<double> theta_charged()    const{return theta_charged_;}
+
+
+     float pt()                   const {return P4_.pt();}
+     float e()                    const {return P4_.energy();}
+     float eta()                  const {return P4_.eta();}
+     float y()                    const {return P4_.Rapidity();}
+     float phi()                  const {return P4_.phi();}
+     float mass()                 const {return P4_.mass();}
+
    private:
      //------ jet 4-momentum vector------------------
      LorentzVector P4_;
@@ -67,6 +97,16 @@ class QCDGenJet
      float ptD2_charged_;
      //---- multiplicity ---
      int multiplicity_charged_;
+
+     vector<double> kT_;
+     vector<double> theta_;
+     vector<double> z_;
+//     vector<double> efficiency_;
+
+     vector<double> z_charged_;
+     vector<double> kT_charged_;
+     vector<double> theta_charged_;
+
 
 };
 #endif

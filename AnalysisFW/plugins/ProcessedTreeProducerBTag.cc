@@ -277,6 +277,14 @@ private:
   vector<float>         mPtD2_charged;
   vector<float>         mMultiplicity_charged;
 
+  vector<vector<double>>         mZ;
+  vector<vector<double>>         mKt;
+  vector<vector<double>>         mTheta;
+
+  vector<vector<double>>         mZ_charged;
+  vector<vector<double>>         mKt_charged;
+  vector<vector<double>>         mTheta_charged;
+
   vector<LorentzVector> mGenJets;
   map<int,int>          mGenJetPhysFlav;
   map<int,int>          mGenJetAlgoFlav;
@@ -418,6 +426,172 @@ private:
        } catch (fastjet::Error) {}
        
 }//, vector<double> & kt, vector<double> & theta);
+
+  template<typename T>
+  void IterativeDeclusteringDetCharged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+   {
+
+        fastjet::PseudoJet myjet;
+        myjet.reset(jet.p4().px(),jet.p4().py(),jet.p4().pz(),jet.p4().e());
+
+          std::vector<fastjet::PseudoJet> particles;
+
+        for (auto pidx = 0u; pidx < jet.numberOfDaughters(); ++pidx)
+        {
+         auto part = dynamic_cast<const pat::PackedCandidate*>(jet.daughter(pidx));
+
+         if (part->charge()!=0 && part->hasTrackDetails() )  //charged-particles
+         { 
+           if((part->dz()*part->dz())/(part->dzError()*part->dzError()) > 25. ) continue; //track quality cut
+         }
+         if (part->charge() == 0) continue; //skip neutral particles  
+         if (part->pt()*part->puppiWeight() < 1) continue; //puppiWeight takes care of whether the particle is associated to the PV or not
+//         if (part->pt() > 1) kt.push_back(part->pt());
+         
+         particles.push_back(fastjet::PseudoJet(part->px()*part->puppiWeight(), part->py()*part->puppiWeight(), part->pz()*part->puppiWeight(), part->energy()*part->puppiWeight() ));
+        }
+
+         fastjet::JetDefinition fJetDef(fastjet::cambridge_algorithm,1,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+
+      try {
+
+         fastjet::GhostedAreaSpec ghost_spec(1, 1, 0.05);
+         fastjet::AreaDefinition fAreaDef(fastjet::passive_area, ghost_spec);
+
+         fastjet::ClusterSequenceArea fClustSeqSA(particles, fJetDef, fAreaDef);
+
+         std::vector<fastjet::PseudoJet> fOutputJets;
+         fOutputJets.clear();
+         fOutputJets = fClustSeqSA.inclusive_jets(0);
+
+         fastjet::PseudoJet jj;
+         fastjet::PseudoJet j1;
+         fastjet::PseudoJet j2;
+         bool valid_jet = false;
+
+
+         if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
+         if (valid_jet == true)        
+         {                             
+           while(jj.has_parents(j1,j2))
+          {
+                   if (j1.perp() < j2.perp()) swap(j1, j2);
+
+                   theta.push_back(j1.delta_R(j2));
+                   kt.push_back(j2.perp() * sin(j1.delta_R(j2)));
+                   z.push_back(j2.perp() /jj.perp());
+           
+                   jj = j1;
+          }
+        }
+       } catch (fastjet::Error) {}
+       
+}
+  template<typename T>
+  void IterativeDeclusteringMC(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+   {
+
+        fastjet::PseudoJet myjet;
+        myjet.reset(jet.p4().px(),jet.p4().py(),jet.p4().pz(),jet.p4().e());
+
+          std::vector<fastjet::PseudoJet> particles;
+
+        for (auto pidx = 0u; pidx < jet.numberOfDaughters(); ++pidx)
+        {
+         auto part = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(pidx)); 
+         particles.push_back(fastjet::PseudoJet(part->px(), part->py(), part->pz(), part->energy() ));
+        }
+
+         fastjet::JetDefinition fJetDef(fastjet::cambridge_algorithm,1,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+
+      try {
+
+         fastjet::GhostedAreaSpec ghost_spec(1, 1, 0.05);
+         fastjet::AreaDefinition fAreaDef(fastjet::passive_area, ghost_spec);
+
+         fastjet::ClusterSequenceArea fClustSeqSA(particles, fJetDef, fAreaDef);
+
+         std::vector<fastjet::PseudoJet> fOutputJets;
+         fOutputJets.clear();
+         fOutputJets = fClustSeqSA.inclusive_jets(0);
+
+         fastjet::PseudoJet jj;
+         fastjet::PseudoJet j1;
+         fastjet::PseudoJet j2;
+         bool valid_jet = false;
+
+
+         if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
+         if (valid_jet == true)
+         {                             
+           while(jj.has_parents(j1,j2))
+          {
+                   if (j1.perp() < j2.perp()) swap(j1, j2);
+
+                   theta.push_back(j1.delta_R(j2));
+                   kt.push_back(j2.perp() * sin(j1.delta_R(j2)));
+                   z.push_back(j2.perp() /jj.perp());
+
+                   jj = j1;
+          }
+        }
+       } catch (fastjet::Error) {}
+       
+}//, vector<double> & kt, vector<double> & theta);
+
+  template<typename T>
+  void IterativeDeclusteringMC_Charged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+   {
+
+        fastjet::PseudoJet myjet;
+        myjet.reset(jet.p4().px(),jet.p4().py(),jet.p4().pz(),jet.p4().e());
+
+          std::vector<fastjet::PseudoJet> particles;
+
+        for (auto pidx = 0u; pidx < jet.numberOfDaughters(); ++pidx)
+        {
+         auto part = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(pidx));
+         if (part == 0) continue;
+         particles.push_back(fastjet::PseudoJet(part->px(), part->py(), part->pz(), part->energy() ));
+        }
+
+         fastjet::JetDefinition fJetDef(fastjet::cambridge_algorithm,1,static_cast<fastjet::RecombinationScheme>(0), fastjet::Best);
+
+      try {
+
+         fastjet::GhostedAreaSpec ghost_spec(1, 1, 0.05);
+         fastjet::AreaDefinition fAreaDef(fastjet::passive_area, ghost_spec);
+
+         fastjet::ClusterSequenceArea fClustSeqSA(particles, fJetDef, fAreaDef);
+
+         std::vector<fastjet::PseudoJet> fOutputJets;
+         fOutputJets.clear();
+         fOutputJets = fClustSeqSA.inclusive_jets(0);
+
+         fastjet::PseudoJet jj;
+         fastjet::PseudoJet j1;
+         fastjet::PseudoJet j2;
+         bool valid_jet = false;
+
+
+         if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
+         if (valid_jet == true)
+         {
+           while(jj.has_parents(j1,j2))
+          {
+                   if (j1.perp() < j2.perp()) swap(j1, j2);
+
+                   theta.push_back(j1.delta_R(j2));
+                   kt.push_back(j2.perp() * sin(j1.delta_R(j2)));
+                   z.push_back(j2.perp() /jj.perp());
+
+                   jj = j1;
+          }
+        }
+       } catch (fastjet::Error) {}
+
+}//, vector<double> & kt, vector<double> & theta);
+
 
   // Find the gen jet best matching to the current jet
   template<typename T>      
@@ -1120,6 +1294,13 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     mPtD2_charged.clear();
     mMultiplicity_charged.clear();
 
+    mTheta.clear();
+    mKt.clear();
+    mZ.clear();
+
+    mTheta_charged.clear();
+    mKt_charged.clear();
+    mZ_charged.clear();
 
     mGenFlavour.clear();
     mGenFlavourHadr.clear();
@@ -1176,6 +1357,30 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 
        // }
       }
+
+    vector<double> kt;
+    vector<double> theta;
+    vector<double> z;
+
+    vector<double> kt_charged;
+    vector<double> theta_charged;
+    vector<double> z_charged;
+
+    fastjet::PseudoJet *sub1MC = new fastjet::PseudoJet();
+    fastjet::PseudoJet *sub2MC = new fastjet::PseudoJet();
+
+
+      IterativeDeclusteringMC(*igen, sub1MC, sub2MC, kt, theta, z);
+      IterativeDeclusteringMC_Charged(*igen, sub1MC, sub2MC, kt_charged, theta_charged, z_charged);
+
+      mKt.push_back(kt);
+      mTheta.push_back(theta);
+      mZ.push_back(z);
+
+      mKt_charged.push_back(kt_charged);
+      mTheta_charged.push_back(theta_charged);
+      mZ_charged.push_back(z_charged);
+
       mLHA.push_back(lha);
       mWidth.push_back(width);
       mThrust.push_back(thrust);
@@ -1400,17 +1605,28 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> kt;
     vector<double> theta;
     vector<double> z;
+
+    vector<double> kt_charged;
+    vector<double> theta_charged;
+    vector<double> z_charged;
+
     fastjet::PseudoJet *sub1Det = new fastjet::PseudoJet();
     fastjet::PseudoJet *sub2Det = new fastjet::PseudoJet();
 
 
     IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z);
 
+    IterativeDeclusteringDetCharged(*ijet, sub1Det, sub2Det, kt_charged, theta_charged, z_charged);
+
 
     QCDPFJet qcdJet;
     qcdJet.setKt(kt);
     qcdJet.setTheta(theta);
     qcdJet.setZ(z);
+
+    qcdJet.setKt_charged(kt_charged);
+    qcdJet.setTheta_charged(theta_charged);
+    qcdJet.setZ_charged(z_charged);
 
     // The fraction of CHS-removed PU (defined similarly as the other fractions, w.r.t. unscaled jet energy).
     float bPrime = (pue/ijet->energy())*scale; 
@@ -1615,6 +1831,14 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
         qcdGenJet.setThrust(mThrust[igen]);
         qcdGenJet.setPtD2(mPtD2[igen]);
         qcdGenJet.setMultiplicity(mMultiplicity[igen]);
+
+        qcdGenJet.setZ(mZ[igen]);
+        qcdGenJet.setKt(mKt[igen]);
+        qcdGenJet.setTheta(mTheta[igen]);
+
+        qcdGenJet.setZ_charged(mZ_charged[igen]);
+        qcdGenJet.setKt_charged(mKt_charged[igen]);
+        qcdGenJet.setTheta_charged(mTheta_charged[igen]);
 
         qcdGenJet.setLHA_charged(mLHA_charged[igen]);
         qcdGenJet.setWidth_charged(mWidth_charged[igen]);
