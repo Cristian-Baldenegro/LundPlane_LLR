@@ -31,5 +31,8 @@ class QCDPFJetBTag : public QCDJet {
     int partonFlavour_;
     int partonFlavourPhysicsDef_;
     int hadronFlavour_;
+
+     float pfDeepCSVb()   const {return pfDeepCSVb_;}
+
 };
 #endif

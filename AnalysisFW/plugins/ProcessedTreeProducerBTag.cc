@@ -368,7 +368,7 @@ private:
     return make_pair(imin,rmin);
   }
   template<typename T>
-  void IterativeDeclusteringDet(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+  void IterativeDeclusteringDet(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta, vector<double> &phi)
    {
 
         fastjet::PseudoJet myjet;
@@ -428,7 +428,7 @@ private:
 }//, vector<double> & kt, vector<double> & theta);
 
   template<typename T>
-  void IterativeDeclusteringDetCharged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+  void IterativeDeclusteringDetCharged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta, vector<double> &phi)
    {
 
         fastjet::PseudoJet myjet;
@@ -488,7 +488,7 @@ private:
        
 }
   template<typename T>
-  void IterativeDeclusteringMC(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+  void IterativeDeclusteringMC(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta, vector<double> &phi)
    {
 
         fastjet::PseudoJet myjet;
@@ -540,7 +540,7 @@ private:
 }//, vector<double> & kt, vector<double> & theta);
 
   template<typename T>
-  void IterativeDeclusteringMC_Charged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z)
+  void IterativeDeclusteringMC_Charged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta, vector<double> &phi)
    {
 
         fastjet::PseudoJet myjet;
@@ -551,7 +551,7 @@ private:
         for (auto pidx = 0u; pidx < jet.numberOfDaughters(); ++pidx)
         {
          auto part = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(pidx));
-         if (part == 0) continue;
+         if (part->charge() == 0) continue;
          particles.push_back(fastjet::PseudoJet(part->px(), part->py(), part->pz(), part->energy() ));
         }
 
@@ -580,6 +580,7 @@ private:
            while(jj.has_parents(j1,j2))
           {
                    if (j1.perp() < j2.perp()) swap(j1, j2);
+                   
 
                    theta.push_back(j1.delta_R(j2));
                    kt.push_back(j2.perp() * sin(j1.delta_R(j2)));
@@ -1362,16 +1363,22 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> theta;
     vector<double> z;
 
+    vector<double> eta;
+    vector<double> phi;
+
     vector<double> kt_charged;
     vector<double> theta_charged;
     vector<double> z_charged;
+
+    vector<double> eta_charged;
+    vector<double> phi_charged;
 
     fastjet::PseudoJet *sub1MC = new fastjet::PseudoJet();
     fastjet::PseudoJet *sub2MC = new fastjet::PseudoJet();
 
 
-      IterativeDeclusteringMC(*igen, sub1MC, sub2MC, kt, theta, z);
-      IterativeDeclusteringMC_Charged(*igen, sub1MC, sub2MC, kt_charged, theta_charged, z_charged);
+      IterativeDeclusteringMC(*igen, sub1MC, sub2MC, kt, theta, z, eta, phi);
+      IterativeDeclusteringMC_Charged(*igen, sub1MC, sub2MC, kt_charged, theta_charged, z_charged, eta_charged, phi_charged);
 
       mKt.push_back(kt);
       mTheta.push_back(theta);
@@ -1606,17 +1613,24 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> theta;
     vector<double> z;
 
+    vector<double> eta;
+    vector<double> phi;
+
     vector<double> kt_charged;
     vector<double> theta_charged;
     vector<double> z_charged;
+
+    vector<double> eta_charged;
+    vector<double> phi_charged;
+
 
     fastjet::PseudoJet *sub1Det = new fastjet::PseudoJet();
     fastjet::PseudoJet *sub2Det = new fastjet::PseudoJet();
 
 
-    IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z);
+    IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z, eta, phi);
 
-    IterativeDeclusteringDetCharged(*ijet, sub1Det, sub2Det, kt_charged, theta_charged, z_charged);
+    IterativeDeclusteringDetCharged(*ijet, sub1Det, sub2Det, kt_charged, theta_charged, z_charged, eta_charged, phi_charged);
 
 
     QCDPFJet qcdJet;

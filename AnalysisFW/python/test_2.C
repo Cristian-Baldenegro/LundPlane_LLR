@@ -111,6 +111,25 @@ void test_2::Loop()
    histosTH2F["Lund plane raw splittings"] = new TH2F("Lund plane raw splittings", "Lund plane raw splittings", 40, 0, 6.0, 40, 0.6, 7);
    histosTH2F["Lund plane raw kT vs theta"] = new TH2F("Lund plane raw kT vs theta", "Lund plane raw kT vs theta", 40, 0, 6.0, 40, -3, 5.5);
 
+   histosTH2F["Lund plane raw splittings charged"] = new TH2F("Lund plane raw splittings charged", "Lund plane raw splittings charged", 40, 0, 6.0, 40, 0.693, 7);
+   histosTH2F["Lund plane raw kT vs theta charged"] = new TH2F("Lund plane raw kT vs theta charged", "Lund plane raw kT vs theta charged", 40, 0, 6.0, 40, -3, 5.5);
+
+   histosTH2F["Lund plane raw splittings gen"] = new TH2F("Lund plane raw splittings gen", "Lund plane raw splittings gen", 40, 0, 6.0, 40, 0.693, 7);
+   histosTH2F["Lund plane raw kT vs theta gen"] = new TH2F("Lund plane raw kT vs theta gen", "Lund plane raw kT vs theta gen", 40, 0, 6.0, 40, -3, 5.5);
+
+   histosTH2F["Lund plane raw splittings charged gen"] = new TH2F("Lund plane raw splittings charged gen", "Lund plane raw splittings charged gen", 40, 0, 6.0, 40, 0.693, 7);
+   histosTH2F["Lund plane raw kT vs theta charged gen"] = new TH2F("Lund plane raw kT vs theta charged gen", "Lund plane raw kT vs theta charged gen", 40, 0, 6.0, 40, -3, 5.5);
+
+   histosTH1F["theta_highKt"] =  new TH1F("theta_highKt", "theta_highKt",10,0., 4.0);
+   histosTH1F["theta_lowKt"] =  new TH1F("theta_lowKt", "theta_lowKt",20,0., 6.0);
+
+   histosTH1F["kT_alltheta"] =  new TH1F("kT_alltheta", "kT_alltheta",20,-1.0, 6.0);
+
+   histosTH1F["theta_highKt_charged"] =  new TH1F("theta_highKt_charged", "theta_highKt_charged",10,0., 4.0);
+   histosTH1F["theta_lowKt_charged"] =  new TH1F("theta_lowKt_charged", "theta_lowKt_charged",20,0., 6.0);
+
+   histosTH1F["kT_alltheta_charged"] =  new TH1F("kT_alltheta_charged", "kT_alltheta_charged",20,-1.0, 6.0);
+
    TFile* output = new TFile("output.root","RECREATE");
 
 
@@ -131,15 +150,70 @@ void test_2::Loop()
      auto z = jet.z();
      auto theta = jet.theta();
      auto kT = jet.kT();
-     if (z.size()> 0 && jet.pt() > 400 && fabs(jet.y()) < 2.0)
+
+
+     auto z_charged = jet.z_charged();
+     auto theta_charged = jet.theta_charged();
+     auto kT_charged = jet.kT_charged();
+
+     if (z.size()> 0 && jet.pt() > 50 && fabs(jet.y()) < 2.0 && z_charged.size() > 0 && jet.pfDeepCSVb() > 0.9 )
       {
         for (unsigned i = 0; i < z.size(); ++i)
         {
           histosTH2F["Lund plane raw splittings"]->Fill(log(0.4/theta.at(i)), log(1/z.at(i)) );
           histosTH2F["Lund plane raw kT vs theta"]->Fill(log(0.4/theta.at(i)), log(kT.at(i)) );
+
+          if (log(kT.at(i))>2) histosTH1F["theta_highKt"]->Fill(log(0.4/theta.at(i)));
+          if (log(kT.at(i))<2 && log(kT.at(i)) > -1) histosTH1F["theta_lowKt"]->Fill(log(0.4/theta.at(i)));
+          histosTH1F["kT_alltheta"]->Fill(log(kT.at(i)));
+
         }
+
+        for (unsigned i = 0; i < z_charged.size(); ++i)
+        {
+          histosTH2F["Lund plane raw splittings charged"]->Fill(log(0.4/theta_charged.at(i)), log(1/z_charged.at(i)) );
+          histosTH2F["Lund plane raw kT vs theta charged"]->Fill(log(0.4/theta_charged.at(i)), log(kT_charged.at(i)) );
+          if (log(kT_charged.at(i))>2) histosTH1F["theta_highKt_charged"]->Fill(log(0.4/theta_charged.at(i)));
+          if (log(kT_charged.at(i))<2 && log(kT_charged.at(i)) > -1 ) histosTH1F["theta_lowKt_charged"]->Fill(log(0.4/theta_charged.at(i)));
+          histosTH1F["kT_alltheta_charged"]->Fill(log(kT_charged.at(i)));
+        }
+
      }
     }
+
+
+   for (int i = 0; i < events->nQCDGenJets(); i++)
+   {
+     auto jet = events->genjet(i);
+   //cout << jet.lha() << endl;
+     auto z = jet.z();
+     auto theta = jet.theta();
+     auto kT = jet.kT();
+
+
+     auto z_charged = jet.z_charged();
+     auto theta_charged = jet.theta_charged();
+     auto kT_charged = jet.kT_charged();
+//    cout << jet.pt() << endl;
+
+     if (z.size()> 0 && jet.pt() > 500  && z_charged.size() > 0 && fabs(jet.y()) < 2.0 )
+      {
+        for (unsigned i = 0; i < z.size(); ++i)
+        {
+          histosTH2F["Lund plane raw splittings gen"]->Fill(log(0.4/theta.at(i)), log(1/z.at(i)) );
+          histosTH2F["Lund plane raw kT vs theta gen"]->Fill(log(0.4/theta.at(i)), log(kT.at(i)) );
+        }
+
+        for (unsigned i = 0; i < z_charged.size(); ++i)
+        {
+          histosTH2F["Lund plane raw splittings charged gen"]->Fill(log(0.4/theta_charged.at(i)), log(1/z_charged.at(i)) );
+          histosTH2F["Lund plane raw kT vs theta charged gen"]->Fill(log(0.4/theta_charged.at(i)), log(kT_charged.at(i)) );
+        }
+
+     }
+   
+
+  }
   }
   output->cd();
   //histosTH1F["jet1Pt"]->Sumw2();

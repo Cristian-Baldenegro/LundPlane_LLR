@@ -1,7 +1,13 @@
 import FWCore.ParameterSet.Config as cms
 
 JHTG16 = cms.untracked.vstring(
- 'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/90000/C01E5165-3992-E811-829C-0025905C3E38.root'
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/90000/C01E5165-3992-E811-829C-0025905C3E38.root',
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/06B2406C-4291-E811-944E-0025905C53B0.root', 
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/08E84FCE-0C91-E811-8969-0025904C641C.root', 
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/0A187AED-6D91-E811-AD1A-0025905C53B2.root', 
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/0C5F51EA-C490-E811-826B-0CC47AFB7DA8.root', 
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/1C2B1C6B-4291-E811-AD8A-0025905D1D60.root', 
+'root://cms-xrd-global.cern.ch//store/data/Run2016G/JetHT/MINIAOD/17Jul2018-v1/00000/224848F0-6D91-E811-A0E9-0025905C2CBA.root'
 )
 
 JHTD16 = cms.untracked.vstring(
