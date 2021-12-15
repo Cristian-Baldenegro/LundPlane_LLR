@@ -47,11 +47,11 @@ test_2::test_2(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DATA_MG8.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DATA_MG8_1GeV_1GeV.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("DATA_MG8.root");
+         f = new TFile("DATA_MG8_1GeV_1GeV.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("DATA_MG8.root:/ak4");
+      TDirectory * dir = (TDirectory*)f->Get("DATA_MG8_1GeV_1GeV.root:/ak4");
       dir->GetObject("ProcessedTree",tree);
 
    }
