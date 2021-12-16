@@ -42,68 +42,7 @@ void test_2::Loop()
    map<string,TH1F*> histosTH1F;
    map<string,TH2F*> histosTH2F;
 
-   histosTH1F["jet1Pt"] = new TH1F("jet1Pt", "jet1Pt",50,500,1000);
-   histosTH1F["pThat"] = new TH1F("ptHat", "PtHat",50,0,1000);
-   histosTH1F["pThat_unweighted"] = new TH1F("ptHat_unweighted", "PtHat_unweighted",50,0,1000);
-   histosTH1F["jet2Pt"] = new TH1F("jet2Pt", "jet2Pt",50,500,1000);
-   histosTH1F["jetPtAsymmetry"] = new TH1F("jetPtAsymmetry", "jetPtAsymmetry",20,0, 1);
-   histosTH1F["DeltaPhi"] = new TH1F("DeltaPhi", "DeltaPhi",32,0, M_PI);
-   histosTH1F["jet1Rapidity"] =  new TH1F("jet1Rapidity", "jet1Rapidity",10,-2.0, 2.0);
-   histosTH1F["jet2Rapidity"] =  new TH1F("jet2Rapidity", "jet2Rapidity",10,-2.0, 2.0);
-   histosTH1F["DeltaRapidity"] =  new TH1F("DeltaRapidity", "DeltaRapidity",10,0, 4.0);
 
-   histosTH1F["jetLHA"] =  new TH1F("jetLHA", "jetLHA",20,.0, 1.0);
-   histosTH1F["jetThrust"] =  new TH1F("jetThrust", "jetThrust",20,.0, 1.0);
-   histosTH1F["jetWidth"] =  new TH1F("jetWidth", "jetWidth",20,.0, 1.0);
-   histosTH1F["ptD2"] =  new TH1F("ptD2", "ptD2",20,.0, 1.0);
-   histosTH1F["multiplicity"] =  new TH1F("multiplicity", "multiplicity",50,.0, 50);
-
-   histosTH1F["jetLHA_charged"] =  new TH1F("jetLHA_charged", "jetLHA_charged",20,.0, 1.0);
-   histosTH1F["jetThrust_charged"] =  new TH1F("jetThrust_charged", "jetThrust_charged",20,.0, 1.0);
-   histosTH1F["jetWidth_charged"] =  new TH1F("jetWidth_charged", "jetWidth_charged",20,.0, 1.0);
-   histosTH1F["ptD2_charged"] =  new TH1F("ptD2_charged", "ptD2_charged",20,.0, 1.0);
-   histosTH1F["multiplicity_charged"] =  new TH1F("multiplicity_charged", "multiplicity_charged",50,.0, 50);
-
-   histosTH1F["gen_jetLHA"] =  new TH1F("gen_jetLHA", "gen_jetLHA",20,.0, 1.0);
-   histosTH1F["gen_jetThrust"] =  new TH1F("gen_jetThrust", "gen_jetThrust",20,.0, 1.0);
-   histosTH1F["gen_jetWidth"] =  new TH1F("gen_jetWidth", "gen_jetWidth",20,.0, 1.0);
-   histosTH1F["gen_ptD2"] =  new TH1F("gen_ptD2", "gen_ptD2",20,.0, 1.0);
-   histosTH1F["gen_multiplicity"] =  new TH1F("gen_multiplicity", "gen_multiplicity",50,.0, 50);
-
-   histosTH1F["gen_jetLHA_charged"] =  new TH1F("gen_jetLHA_charged", "gen_jetLHA_charged",20,.0, 1.0);
-   histosTH1F["gen_jetThrust_charged"] =  new TH1F("gen_jetThrust_charged", "gen_jetThrust_charged",20,.0, 1.0);
-   histosTH1F["gen_jetWidth_charged"] =  new TH1F("gen_jetWidth_charged", "gen_jetWidth_charged",20,.0, 1.0);
-   histosTH1F["gen_ptD2_charged"] =  new TH1F("gen_ptD2_charged", "gen_ptD2_charged",20,.0, 1.0);
-   histosTH1F["gen_multiplicity_charged"] =  new TH1F("gen_multiplicity_charged", "gen_multiplicity_charged",50,.0, 50);
-
-
-
-   histosTH1F["jet1PtResolutionRatio"] = new TH1F("jet1PtResolutionRatio", "jet1PtResolutionRatio",50.,0,2);
-
-
-   histosTH1F["jet1PtResolution"] = new TH1F("jet1PtResolution", "jet1PtResolution",50.,-.5,0.5);
-   histosTH1F["jet2PtResolution"] = new TH1F("jet2PtResolution", "jet2PtResolution",50.,-.5,0.5);
-
-   histosTH1F["DeltaJet1Rapidity"] = new TH1F("DeltaJet1Rapidity", "DeltaJet1Rapidity",100.,-.5,.5);
-   histosTH1F["DeltaJet2Rapidity"] = new TH1F("DeltaJet2Rapidity", "DeltaJet2Rapidity",100.,-.5,.5);
-
-   histosTH1F["DeltaJet1Phi"] = new TH1F("DeltaJet1Phi", "DeltaJet1Phi",100.,-.5,.5);
-   histosTH1F["DeltaJet2Phi"] = new TH1F("DeltaJet2Phi", "DeltaJet2Phi",100.,-.5,.5);
-
-   histosTH1F["residuals_jetLHA"] = new TH1F("residuals_jetLHA", "residuals_jetLHA",50.,-1.,1.);
-   histosTH1F["residuals_jetLHA_charged"] = new TH1F("residuals_jetLHA_charged", "residuals_jetLHA_charged",50.,-1.,1.);
-
-   histosTH1F["residuals_jetWidth"] = new TH1F("residuals_jetWidth", "residuals_jetWidth",50.,-1.,1.);
-   histosTH1F["residuals_jetWidth_charged"] = new TH1F("residuals_jetWidth_charged", "residuals_jetWidth_charged",50.,-1.,1.);
-
-   histosTH1F["residuals_jetThrust"] = new TH1F("residuals_jetThrust", "residuals_jetThrust",50.,-1.,1.);
-   histosTH1F["residuals_jetThrust_charged"] = new TH1F("residuals_jetThrust_charged", "residuals_jetThrust_charged",50.,-1.,1.);
-
-   histosTH1F["residuals_jetPtD2"] = new TH1F("residuals_jetPtD2", "residuals_jetPtD2",50.,-1.,1.);
-   histosTH1F["residuals_jetPtD2_charged"] = new TH1F("residuals_jetPtD2_charged", "residuals_jetPtD2_charged",50.,-1.,1.);
-
-   histosTH1F["residuals_jetMultiplicity"] = new TH1F("residuals_jetMultiplicity", "residuals_jetMultiplicity",40,-30,10);
-   histosTH1F["residuals_jetMultiplicity_charged"] = new TH1F("residuals_jetMultiplicity_charged", "residuals_jetMultiplicity_charged",40,-30,10);
 
    histosTH1F["reco_efficiency_PF"] = new TH1F("reco_efficiency_PF", "reco_efficiency_PF",11,0.,1.1);
    histosTH1F["reco_efficiency_charged"] = new TH1F("reco_efficiency_charged", "reco_efficiency_charged",11,0.,1.1);
@@ -130,22 +69,26 @@ void test_2::Loop()
 
    histosTH1F["kT_alltheta_charged"] =  new TH1F("kT_alltheta_charged", "kT_alltheta_charged",20,-1.0, 6.0);
 
-   histosTH2F["response kT neutral+charged"] = new TH2F("response kT neutral+charged", "", 12, -1, 5, 12, -1, 5);
-   histosTH2F["response theta neutral+charged"] = new TH2F("response theta neutral+charged", "", 12, 0, 6.0, 12, 0, 6.0);
+   histosTH2F["response kT neutral+charged"] = new TH2F("response kT neutral+charged", "", 18, -1, 5, 18, -1, 5);
+   histosTH2F["response theta neutral+charged"] = new TH2F("response theta neutral+charged", "", 18, 0, 6.0, 18, 0, 6.0);
 
-   histosTH1F["kT_gen_spectrum"] = new TH1F("kT_gen_spectrum", "", 12, -1, 5);
-   histosTH1F["theta_gen_spectrum"] = new TH1F("theta_gen_spectrum", "", 12, 0, 6.0);
+   histosTH1F["kT_gen_spectrum"] = new TH1F("kT_gen_spectrum", "", 18, -1, 5);
+   histosTH1F["theta_gen_spectrum"] = new TH1F("theta_gen_spectrum", "", 18, 0, 6.0);
 
-   histosTH2F["response kT charged"] = new TH2F("response kT charged", "", 12, -1, 5, 12, -1, 5);
-   histosTH2F["response theta charged"] = new TH2F("response theta charged", "", 12, 0, 6.0, 12, 0, 6.0);
-
-
-   histosTH1F["kT_charged_gen_spectrum"] = new TH1F("kT_charged_gen_spectrum", "", 12, -1, 5);
-   histosTH1F["theta_charged_gen_spectrum"] = new TH1F("theta_charged_gen_spectrum", "", 12, 0, 6.0);
+   histosTH2F["response kT charged"] = new TH2F("response kT charged", "", 18, -1, 5, 18, -1, 5);
+   histosTH2F["response theta charged"] = new TH2F("response theta charged", "", 18, 0, 6.0, 18, 0, 6.0);
 
 
-   histosTH1F["n_prongs_charged_gen"] = new TH1F("n_prongs_charged_gen", "", 15, 0, 15);
-   histosTH1F["n_prongs_charged_reco"] = new TH1F("n_prongs_charged_reco", "", 15, 0, 15);
+   histosTH1F["kT_charged_gen_spectrum"] = new TH1F("kT_charged_gen_spectrum", "", 18, -1, 5);
+   histosTH1F["theta_charged_gen_spectrum"] = new TH1F("theta_charged_gen_spectrum", "", 18, 0, 6.0);
+
+   histosTH2F["Lund_plane_reco_all"] = new TH2F("Lund_plane_reco_all", "", 18, 0, 6.0, 18, -1, 5);
+   histosTH2F["Lund_plane_reco_matched"] = new TH2F("Lund_plane_reco_matched", "", 18, 0, 6.0, 18, -1, 5);
+   histosTH2F["Lund_plane_gen_all"] = new TH2F("Lund_plane_gen_all", "", 18, 0, 6.0, 18, -1, 5);
+   histosTH2F["Lund_plane_gen_matched"] = new TH2F("Lund_plane_gen_matched", "", 18, 0, 6.0, 18, -1, 5);
+
+   histosTH2F["purities_2D"] = new TH2F("purities_2D", "", 18, 0, 6.0, 18, -1, 5);
+   histosTH2F["efficiencies_2D"] = new TH2F("efficiencies_2D", "", 18, 0, 6.0, 18, -1, 5);
 
    TFile* output = new TFile("output.root","RECREATE");
 
@@ -270,7 +213,7 @@ void test_2::Loop()
      auto phi2_charged_gen = jet_gen.phi2_charged();
 
      if  (!(z_charged_gen.size()> 0 && jet_gen.pt() > 400 && fabs(jet_gen.y()) < 2.5 && z_charged_reco.size() > 0 )) continue;
-     cout << jet_reco.phi()- jet_gen.phi() << endl;
+//     cout << jet_reco.phi()- jet_gen.phi() << endl;
 
 
 /*     histosTH2F["response kT charged"]->Fill(log(kT_charged_gen.at(index_true)), log(kT_charged_reco.at(index_reco)));
@@ -296,7 +239,7 @@ void test_2::Loop()
       cout << "=================== " << i << endl;*/
       for (unsigned j = 0; j < z_charged_reco.size(); ++j) //loop over reco-level splittings
       {
-       if (log(kT_charged_reco.at(j)) < -1. || log(kT_charged_reco.at(j)) > 5) continue;
+       if (log(kT_charged_reco.at(j)) < -1. || log(kT_charged_reco.at(j)) > 6) continue;
        if (log(0.4/theta_charged_reco.at(j)) < 0. || log(0.4/theta_charged_reco.at(j)) > 5) continue;
 //       cout << "det-level splitting " << j << endl;
        float dphi = fabs(phi2_charged_reco.at(j) - phi2_charged_gen.at(i));
@@ -305,14 +248,13 @@ void test_2::Loop()
        float dR = std::sqrt(dphi*dphi + deta*deta);
        kT_ratio = min(kT_charged_reco.at(j),kT_charged_gen.at(i))/max(kT_charged_reco.at(j),kT_charged_gen.at(i));
 //       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.phi() << " recoSplitPhi " << phi2_charged_reco.at(j) << "jetGenPhi " << jet_gen.phi() << "genSplitPhi " << phi2_charged_gen.at(i)  << endl;
-//       cout << "det-level splitting " << j << " dR " <<  dR << " dEta " << deta << "dPhi " << dphi  << " kT ratio " << kT_ratio << "jet phi " << jet_reco.phi() << endl;
+//       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.jetPhiCA_charged() << " recoSplitPhi " << phi2_charged_reco.at(j) << "jetGenPhi " << jet_gen.jetPhiCA_charged() << "genSplitPhi " << phi2_charged_gen.at(i)  << endl;       
        if (fabs(deta) < fabs(dR_max) && kT_ratio > kT_min) //find best pair
        {
          dR_max = fabs(deta);
          index_true = i;
          index_reco = j;
          kT_min = kT_ratio;
-//         cout << " we have a match with dR " << dR << " and kTratio " << kT_min << endl;
        }//endif
       }//end for
 
@@ -339,7 +281,7 @@ void test_2::Loop()
          }//endif
        }//end for
       if ( index_true != index_true_mc ) continue;
-     cout << "index_reco " << index_reco << " dR " << dR_max << " kT_ratio " << kT_min << endl;
+//     cout << "index_reco " << index_reco << " dR " << dR_max << " kT_ratio " << kT_min << endl;
      histosTH2F["response kT charged"]->Fill(log(kT_charged_gen.at(index_true)), log(kT_charged_reco.at(index_reco)));
      histosTH1F["kT_charged_gen_spectrum"]->Fill(log(kT_charged_gen.at(index_true)));
      histosTH2F["response theta charged"]->Fill(log(0.4/theta_charged_gen.at(index_true)), log(0.4/theta_charged_reco.at(index_reco)));
@@ -348,29 +290,30 @@ void test_2::Loop()
      }///end for
 
 
-     if  (!(z_gen.size()> 0 && jet_gen.pt() > 400 && fabs(jet_gen.y()) < 2.0 && z_reco.size() > 0 )) continue;
+     if  (!(z_gen.size()> 0 && jet_gen.pt() > 400 && fabs(jet_gen.y()) < 2.5 && z_reco.size() > 0 )) continue;
      for (unsigned i = 0; i < z_gen.size(); ++i) // loop over gen-level splittings
      {
 
       if (log(kT_gen.at(i)) < -2. || log(kT_gen.at(i)) > 5) continue; //gen-level phase-space
-      if (log(0.4/theta_gen.at(i)) < 0. || log(0.4/theta_gen.at(i)) > 5) continue; //gen-level phase-space
+      if (log(0.4/theta_gen.at(i)) < 0. || log(0.4/theta_gen.at(i)) > 6) continue; //gen-level phase-space
 
       float dR_max = 0.1;
       int index_true = -1;
       int index_reco = -1;
       float kT_min = 0.5; 
-//      cout << "gen-level splitting " << i << endl;
       for (unsigned j = 0; j < z_reco.size(); ++j) //loop over reco-level splittings
       {
        if (log(kT_reco.at(j)) < -1. || log(kT_reco.at(j)) > 5) continue;
-       if (log(0.4/theta_reco.at(j)) < 0. || log(0.4/theta_reco.at(j)) > 5) continue;
-
+       if (log(0.4/theta_reco.at(j)) < 0. || log(0.4/theta_reco.at(j)) > 6) continue;
+//       histosTH2F["Lund_plane_reco_all"]->Fill(log(0.4/theta_reco.at(j)),log(0.4/theta_reco.at(j)) > 6);
        float dphi = fabs(phi2_reco.at(j) - phi2_gen.at(i));
        float deta = eta2_reco.at(j) - eta2_gen.at(i);
        if (dphi > TMath::Pi()) dphi = 2.*TMath::Pi() - dphi;
        float dR = std::sqrt(dphi*dphi + deta*deta);
        float kT_ratio = min(kT_reco.at(j),kT_gen.at(i))/max(kT_reco.at(j),kT_gen.at(i));
-//       cout << "det-level splitting " << j << " dR " <<  dR << " dEta " << deta << " dPhi " << dphi  << " kT ratio " << kT_ratio << endl; 
+//       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.phi() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.phi() << " genSplitPhi " << phi2_gen.at(i)  << " dPhi " << dphi << endl;
+//       cout << "det-level splitting " << j << " dR " <<  dR << " dEta " << deta << " dPhi " << dphi  << " kT ratio " << kT_ratio << endl;
+       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.jetPhiCA_charged() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.jetPhiCA_charged() << "genSplitPhi " << phi2_gen.at(i)  << endl;
        if (dR < dR_max && kT_ratio > kT_min  ) //find best pair
        {
 	 dR_max = dR;
@@ -417,20 +360,35 @@ void test_2::Loop()
  
 }
 
-  for (int i = 1; i < 13; i++) // normalization for response matrix
+  for (int i = 1; i < 19; i++) // normalization for response matrix
   {
 
-   for (int j = 1; j < 13; j++)
+   for (int j = 1; j < 19; j++)
    {
-  //  cout << histosTH2F["response kT charged"]->GetBinContent(i,j) << endl;
     histosTH2F["response kT charged"]->SetBinContent(i,j, float(histosTH2F["response kT charged"]->GetBinContent(i,j))/float(histosTH1F["kT_charged_gen_spectrum"]->GetBinContent(i)) );
-    histosTH2F["response theta charged"]->SetBinContent(i,j, float(histosTH2F["response theta charged"]->GetBinContent(i,j))/float(histosTH1F["theta_charged_gen_spectrum"]->GetBinContent(i)) );
     histosTH2F["response kT neutral+charged"]->SetBinContent(i,j, float(histosTH2F["response kT neutral+charged"]->GetBinContent(i,j))/float(histosTH1F["kT_gen_spectrum"]->GetBinContent(i)) );    
-    histosTH2F["response theta neutral+charged"]->SetBinContent(i,j, float(histosTH2F["response theta neutral+charged"]->GetBinContent(i,j))/float(histosTH1F["theta_gen_spectrum"]->GetBinContent(i)) );
    }
 
   }
 
+  for (int i = 1; i < 19; i++) // normalization for response matrix
+  {
+
+   for (int j = 1; j < 19; j++)
+   {
+    histosTH2F["response theta charged"]->SetBinContent(i,j, float((histosTH2F["response theta charged"]->GetBinContent(i,j) ))/float((histosTH1F["theta_charged_gen_spectrum"]->GetBinContent(i))) );
+    histosTH2F["response theta neutral+charged"]->SetBinContent(i,j, float(histosTH2F["response theta neutral+charged"]->GetBinContent(i,j))/float(histosTH1F["theta_gen_spectrum"]->GetBinContent(i)));
+   }
+
+  }
+
+  histosTH2F["purities_2D"] = (TH2F*) histosTH2F["Lund_plane_reco_matched"]->Clone();
+  histosTH2F["purities_2D"]->Divide(histosTH1F["Lund_plane_reco_all"]);
+  histosTH2F["purities_2D"]->SetName("purities_2D");
+
+  histosTH2F["efficiencies_2D"] = (TH2F*) histosTH2F["Lund_plane_gen_matched"]->Clone();
+  histosTH2F["efficiencies_2D"]->Divide(histosTH1F["Lund_plane_gen_all"]);
+  histosTH2F["efficiencies_2D"]->SetName("efficiencies_");
 
   output->cd();
   //histosTH1F["jet1Pt"]->Sumw2();
