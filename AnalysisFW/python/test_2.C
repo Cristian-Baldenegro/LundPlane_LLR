@@ -87,8 +87,9 @@ void test_2::Loop()
    histosTH2F["Lund_plane_gen_all"] = new TH2F("Lund_plane_gen_all", "", 18, 0, 6.0, 18, -1, 5);
    histosTH2F["Lund_plane_gen_matched"] = new TH2F("Lund_plane_gen_matched", "", 18, 0, 6.0, 18, -1, 5);
 
-   histosTH2F["purities_2D"] = new TH2F("purities_2D", "", 18, 0, 6.0, 18, -1, 5);
    histosTH2F["efficiencies_2D"] = new TH2F("efficiencies_2D", "", 18, 0, 6.0, 18, -1, 5);
+   TH2F *h_purities_2D = new TH2F("purities_2D", "", 18, 0, 6.0, 18, -1, 5);
+   TH2F *h_purities_2D_denom = new TH2F("purities_2D_denom", "", 18, 0, 6.0, 18, -1, 5);
 
    TFile* output = new TFile("output.root","RECREATE");
 
@@ -216,13 +217,8 @@ void test_2::Loop()
 //     cout << jet_reco.phi()- jet_gen.phi() << endl;
 
 
-/*     histosTH2F["response kT charged"]->Fill(log(kT_charged_gen.at(index_true)), log(kT_charged_reco.at(index_reco)));
-     histosTH1F["kT_charged_gen_spectrum"]->Fill(log(kT_charged_gen.at(index_true)));
-     histosTH2F["response theta charged"]->Fill(log(0.4/theta_charged_gen.at(index_true)), log(0.4/theta_charged_reco.at(index_reco)));
-     histosTH1F["theta_charged_gen_spectrum"]->Fill(log(0.4/theta_charged_gen.at(index_true)));
-     histosTH1F["kT_charged_gen_spectrum"]->Fill(log(kT_charged_gen.at(index_true)));
-*/
-     for (unsigned i = 0; i < z_charged_gen.size(); ++i) // loop over gen-level splittings
+
+/*     for (unsigned i = 0; i < z_charged_gen.size(); ++i) // loop over gen-level splittings
      {
 
       if (log(kT_charged_gen.at(i)) < -2. || log(kT_charged_gen.at(i)) > 6) continue; //gen-level phase-space
@@ -234,10 +230,10 @@ void test_2::Loop()
       int index_reco = -1;
       float kT_min = 0.5;
       float kT_ratio = 0.5;
-/*      cout << "=================== " << i << endl;
+      cout << "=================== " << i << endl;
       cout << "gen-level splitting " << i << endl;
       cout << "=================== " << i << endl;*/
-      for (unsigned j = 0; j < z_charged_reco.size(); ++j) //loop over reco-level splittings
+/*      for (unsigned j = 0; j < z_charged_reco.size(); ++j) //loop over reco-level splittings
       {
        if (log(kT_charged_reco.at(j)) < -1. || log(kT_charged_reco.at(j)) > 6) continue;
        if (log(0.4/theta_charged_reco.at(j)) < 0. || log(0.4/theta_charged_reco.at(j)) > 5) continue;
@@ -288,24 +284,33 @@ void test_2::Loop()
      histosTH1F["theta_charged_gen_spectrum"]->Fill(log(0.4/theta_charged_gen.at(index_true)));
      histosTH1F["kT_charged_gen_spectrum"]->Fill(log(kT_charged_gen.at(index_true)));
      }///end for
-
+*/
 
      if  (!(z_gen.size()> 0 && jet_gen.pt() > 400 && fabs(jet_gen.y()) < 2.5 && z_reco.size() > 0 )) continue;
+      int first_splitting = 0;
      for (unsigned i = 0; i < z_gen.size(); ++i) // loop over gen-level splittings
      {
 
       if (log(kT_gen.at(i)) < -2. || log(kT_gen.at(i)) > 5) continue; //gen-level phase-space
       if (log(0.4/theta_gen.at(i)) < 0. || log(0.4/theta_gen.at(i)) > 6) continue; //gen-level phase-space
+       histosTH2F["Lund_plane_gen_all"]->Fill(log(0.4/theta_gen.at(i)),log(kT_gen.at(i) ));
+      first_splitting = first_splitting+1;
 
       float dR_max = 0.1;
       int index_true = -1;
       int index_reco = -1;
-      float kT_min = 0.5; 
+      float kT_min = 0.5;
       for (unsigned j = 0; j < z_reco.size(); ++j) //loop over reco-level splittings
       {
        if (log(kT_reco.at(j)) < -1. || log(kT_reco.at(j)) > 5) continue;
        if (log(0.4/theta_reco.at(j)) < 0. || log(0.4/theta_reco.at(j)) > 6) continue;
-//       histosTH2F["Lund_plane_reco_all"]->Fill(log(0.4/theta_reco.at(j)),log(0.4/theta_reco.at(j)) > 6);
+      // cout << " first splitting " << first_splitting << " j " << j << endl;
+       if (first_splitting == 1)
+       {
+        histosTH2F["Lund_plane_reco_all"]->Fill(log(0.4/theta_reco.at(j)),log(kT_reco.at(j) ));
+        h_purities_2D_denom->Fill(log(0.4/theta_reco.at(j)),log(kT_reco.at(j) ));
+       }
+
        float dphi = fabs(phi2_reco.at(j) - phi2_gen.at(i));
        float deta = eta2_reco.at(j) - eta2_gen.at(i);
        if (dphi > TMath::Pi()) dphi = 2.*TMath::Pi() - dphi;
@@ -313,7 +318,7 @@ void test_2::Loop()
        float kT_ratio = min(kT_reco.at(j),kT_gen.at(i))/max(kT_reco.at(j),kT_gen.at(i));
 //       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.phi() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.phi() << " genSplitPhi " << phi2_gen.at(i)  << " dPhi " << dphi << endl;
 //       cout << "det-level splitting " << j << " dR " <<  dR << " dEta " << deta << " dPhi " << dphi  << " kT ratio " << kT_ratio << endl;
-       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.jetPhiCA_charged() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.jetPhiCA_charged() << "genSplitPhi " << phi2_gen.at(i)  << endl;
+//       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.jetPhiCA_charged() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.jetPhiCA_charged() << "genSplitPhi " << phi2_gen.at(i)  << endl;
        if (dR < dR_max && kT_ratio > kT_min  ) //find best pair
        {
 	 dR_max = dR;
@@ -326,7 +331,7 @@ void test_2::Loop()
 
        if ( index_reco == -1 || index_true == -1 ) continue;
        int index_true_mc = -1;
-       float dR_max_det = 0.2;
+       float dR_max_det = 0.1;
        kT_min = 0.5;
        for (unsigned l = 0; l < z_gen.size(); ++l) // loop over gen-level splitings, check if the previous match is true the other way around
        {
@@ -346,6 +351,11 @@ void test_2::Loop()
          }//endif
        }//end for
       if ( index_true != index_true_mc ) continue;
+
+     histosTH2F["Lund_plane_reco_matched"]->Fill(log(0.4/theta_reco.at(index_reco)),log(kT_reco.at(index_reco) ));
+     histosTH2F["Lund_plane_gen_matched"]->Fill(log(0.4/theta_gen.at(index_true)),log(kT_gen.at(index_true) ));
+     h_purities_2D->Fill(log(0.4/theta_reco.at(index_reco)),log(kT_reco.at(index_reco) ));
+
      histosTH2F["response kT neutral+charged"]->Fill(log(kT_gen.at(index_true)), log(kT_reco.at(index_reco)));
      histosTH2F["response theta neutral+charged"]->Fill(log(0.4/theta_gen.at(index_true)), log(0.4/theta_reco.at(index_reco)));
      histosTH1F["theta_gen_spectrum"]->Fill(log(0.4/theta_gen.at(index_true)));
@@ -365,7 +375,7 @@ void test_2::Loop()
 
    for (int j = 1; j < 19; j++)
    {
-    histosTH2F["response kT charged"]->SetBinContent(i,j, float(histosTH2F["response kT charged"]->GetBinContent(i,j))/float(histosTH1F["kT_charged_gen_spectrum"]->GetBinContent(i)) );
+//    histosTH2F["response kT charged"]->SetBinContent(i,j, float(histosTH2F["response kT charged"]->GetBinContent(i,j))/float(histosTH1F["kT_charged_gen_spectrum"]->GetBinContent(i)) );
     histosTH2F["response kT neutral+charged"]->SetBinContent(i,j, float(histosTH2F["response kT neutral+charged"]->GetBinContent(i,j))/float(histosTH1F["kT_gen_spectrum"]->GetBinContent(i)) );    
    }
 
@@ -376,22 +386,29 @@ void test_2::Loop()
 
    for (int j = 1; j < 19; j++)
    {
-    histosTH2F["response theta charged"]->SetBinContent(i,j, float((histosTH2F["response theta charged"]->GetBinContent(i,j) ))/float((histosTH1F["theta_charged_gen_spectrum"]->GetBinContent(i))) );
+//    histosTH2F["response theta charged"]->SetBinContent(i,j, float((histosTH2F["response theta charged"]->GetBinContent(i,j) ))/float((histosTH1F["theta_charged_gen_spectrum"]->GetBinContent(i))) );
     histosTH2F["response theta neutral+charged"]->SetBinContent(i,j, float(histosTH2F["response theta neutral+charged"]->GetBinContent(i,j))/float(histosTH1F["theta_gen_spectrum"]->GetBinContent(i)));
    }
 
   }
 
-  histosTH2F["purities_2D"] = (TH2F*) histosTH2F["Lund_plane_reco_matched"]->Clone();
-  histosTH2F["purities_2D"]->Divide(histosTH1F["Lund_plane_reco_all"]);
-  histosTH2F["purities_2D"]->SetName("purities_2D");
+//  histosTH2F["purities_2D"] = (TH2F*) histosTH2F["Lund_plane_reco_matched"]->Clone();
+//  histosTH2F["purities_2D"]->Divide(histosTH2F["Lund_plane_reco_all"]);
+//  histosTH2F["purities_2D"]->SetName("purities_2D");
+//  h_purities_2D->Divide(h_purities_2D_denom);
+/*  histosTH2F["efficiencies_2D"] = (TH2F*) histosTH2F["Lund_plane_gen_matched"]->Clone();
+  histosTH2F["efficiencies_2D"]->Divide(histosTH2F["Lund_plane_gen_all"]);
+  histosTH2F["efficiencies_2D"]->SetName("efficiencies_2D");*/
 
-  histosTH2F["efficiencies_2D"] = (TH2F*) histosTH2F["Lund_plane_gen_matched"]->Clone();
-  histosTH2F["efficiencies_2D"]->Divide(histosTH1F["Lund_plane_gen_all"]);
-  histosTH2F["efficiencies_2D"]->SetName("efficiencies_");
+//for some reason Divide is not working as it should, maybe due to empty bins?
+
+
 
   output->cd();
   //histosTH1F["jet1Pt"]->Sumw2();
+
+    h_purities_2D->Write();
+    h_purities_2D_denom->Write();
 
    for(map<string,TH1F*>::const_iterator it = histosTH1F.begin(); it != histosTH1F.end(); ++it)
       it->second->Sumw2();
@@ -409,3 +426,4 @@ void test_2::Loop()
 
   output->Close();
 }
+
