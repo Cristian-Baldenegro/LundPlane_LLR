@@ -1,5 +1,5 @@
 #define test_2_cxx
-#include "test_2.h"
+//#include "test_2.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -8,6 +8,126 @@
 
 
 using namespace std;
+
+
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFile.h>
+
+// Header file for the classes stored in the TTree if any.
+#include "LundPlane_LLR/AnalysisFW/interface/QCDEvent.h"
+
+class test_2 {
+public :
+   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+   Int_t           fCurrent; //!current Tree number in a TChain
+
+// Fixed size dimensions of array or collections stored in the TTree if any.
+
+   // Declaration of leaf types
+   QCDEvent        *events;
+
+   // List of branches
+   TBranch        *b_events;   //!
+
+   test_2(TTree *tree=0);
+   virtual ~test_2();
+   virtual Int_t    Cut(Long64_t entry);
+   virtual Int_t    GetEntry(Long64_t entry);
+   virtual Long64_t LoadTree(Long64_t entry);
+   virtual void     Init(TTree *tree);
+   virtual void     Loop();
+   virtual Bool_t   Notify();
+   virtual void     Show(Long64_t entry = -1);
+};
+
+test_2::test_2(TTree *tree) : fChain(0) 
+{
+// if parameter tree is not specified (or zero), connect the file
+// used to generate this class and read the Tree.
+   if (tree == 0) {
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DATA_MG8_500MeV_0MeV.root");
+      if (!f || !f->IsOpen()) {
+         f = new TFile("DATA_MG8_500MeV_0MeV.root");
+      }
+      TDirectory * dir = (TDirectory*)f->Get("DATA_MG8_500MeV_0MeV.root:/ak4");
+      dir->GetObject("ProcessedTree",tree);
+   }
+   Init(tree);
+}
+
+test_2::~test_2()
+{
+   if (!fChain) return;
+   delete fChain->GetCurrentFile();
+}
+
+Int_t test_2::GetEntry(Long64_t entry)
+{
+// Read contents of entry.
+   if (!fChain) return 0;
+   return fChain->GetEntry(entry);
+}
+Long64_t test_2::LoadTree(Long64_t entry)
+{
+// Set the environment to read one entry
+   if (!fChain) return -5;
+   Long64_t centry = fChain->LoadTree(entry);
+   if (centry < 0) return centry;
+   if (fChain->GetTreeNumber() != fCurrent) {
+      fCurrent = fChain->GetTreeNumber();
+      Notify();
+   }
+   return centry;
+}
+
+void test_2::Init(TTree *tree)
+{
+   // The Init() function is called when the selector needs to initialize
+   // a new tree or chain. Typically here the branch addresses and branch
+   // pointers of the tree will be set.
+   // It is normally not necessary to make changes to the generated
+   // code, but the routine can be extended by the user if needed.
+   // Init() will be called many times when running on PROOF
+   // (once per file to be processed).
+
+   // Set object pointer
+   events = 0;
+   // Set branch addresses and branch pointers
+   if (!tree) return;
+   fChain = tree;
+   fCurrent = -1;
+   fChain->SetMakeClass(1);
+
+   fChain->SetBranchAddress("events", &events, &b_events);
+   Notify();
+}
+
+Bool_t test_2::Notify()
+{
+   // The Notify() function is called when a new file is opened. This
+   // can be either for a new TTree in a TChain or when when a new TTree
+   // is started when using PROOF. It is normally not necessary to make changes
+   // to the generated code, but the routine can be extended by the
+   // user if needed. The return value is currently not used.
+
+   return kTRUE;
+}
+
+void test_2::Show(Long64_t entry)
+{
+// Print contents of entry.
+// If entry is not specified, print current entry
+   if (!fChain) return;
+   fChain->Show(entry);
+}
+Int_t test_2::Cut(Long64_t entry)
+{
+// This function may be called from Loop.
+// returns  1 if entry is accepted.
+// returns -1 otherwise.
+   return 1;
+}
 
 void test_2::Loop()
 {
@@ -64,11 +184,11 @@ void test_2::Loop()
 
    histosTH1F["kT_alltheta"] =  new TH1F("kT_alltheta", "kT_alltheta",20,-1.0, 6.0);
 
-   int nbins = 22;
-   int nbins_dR = 19;
+   int nbins = 16;
+   int nbins_dR = 13;
    float logkTmax = 4.33333;
-   float logkTmin = -3;
-   float logRmax = 4.75;
+   float logkTmin = -1;
+   float logRmax = 2.6;
 
    histosTH1F["dEta"] =  new TH1F("dEta", "dEta",200,-0.1, 0.1);
    histosTH1F["dPhi"] =  new TH1F("dPhi", "dPhi",100,0, 0.1);
@@ -82,6 +202,12 @@ void test_2::Loop()
    histosTH1F["ratio_response_kT"] =  new TH1F("ratio_response_kT", "ratio_response_kT",200,0., 2.);
    histosTH1F["ratio_response_kT_perturbative"] =  new TH1F("ratio_response_kT_perturbative", "ratio_response_kT_perturbative",200,0., 2.);
    histosTH1F["ratio_response_kT_nonperturbative"] =  new TH1F("ratio_response_kT_nonperturbative", "ratio_response_kT_nonperturbative",200,0., 2.);
+
+   histosTH2F["residual_vs_kTreco"] = new TH2F("residual_vs_kTreco", "", nbins, logkTmin, logkTmax, 25, -1, 1);
+   histosTH2F["residual_vs_kTtrue"] = new TH2F("residual_vs_kTtrue", "", nbins, logkTmin, logkTmax, 25, -1, 1);
+
+   histosTH2F["residual_vs_thetareco"] = new TH2F("residual_vs_thetareco", "", nbins_dR, 0, logRmax, 25, -1, 1);
+   histosTH2F["residual_vs_thetatrue"] = new TH2F("residual_vs_thetatrue", "", nbins_dR, 0, logRmax, 25, -1, 1);
 
    histosTH1F["residual_theta"] =  new TH1F("residual_theta", "residual_theta",200,-1., 1.);
    histosTH1F["residual_theta_perturbative"] =  new TH1F("residual_theta_perturbative", "residual_theta_perturbative",200,-1., 1.);
@@ -205,6 +331,7 @@ void test_2::Loop()
 
    for (int k = 0; k < events->nPFJetsCHS(); k++) // det-level jets
    {
+     bool mismatch = false;
      auto jet_reco = events->pfjetchs(k);
 
      auto z_reco = jet_reco.z();
@@ -241,30 +368,34 @@ void test_2::Loop()
 
      if  (!(z_gen.size()> 0 && jet_gen.pt() > 500 && fabs(jet_gen.y()) < 2.0 && z_reco.size() > 0 )) continue;
       int first_splitting = 0;
+
+
      for (unsigned i = 0; i < z_gen.size(); ++i) // loop over gen-level splittings
      {
-
+     if (mismatch == true) cout << "=======================================" << endl;
+     if (mismatch == true) cout << "jet" << "\t" << jet_gen.pt() << "\t" << jet_gen.phi() << "\t" << jet_gen.eta() << endl;
 //      cout << "=================== " << i << endl;
 //      cout << "gen-level splitting " << i << endl;
  //     cout << "=================== " << i << endl;
 
-      if (log(kT_gen.at(i)) < -6.5 || log(kT_gen.at(i)) > 7) continue; //gen-level phase-space
-      if (log(0.4/theta_gen.at(i)) < 0. || log(0.4/theta_gen.at(i)) > 6) continue; //gen-level phase-space
+      if (log(kT_gen.at(i)) < -6 || log(kT_gen.at(i)) > 7) continue; //gen-level phase-space
+      if (log(0.4/theta_gen.at(i)) < 0. || log(0.4/theta_gen.at(i)) > 3) continue; //gen-level phase-space
  //     if (log(1/z_gen.at(i)) > 6.9) continue; //gen-level phase-space
        histosTH2F["Lund_plane_gen_all"]->Fill(log(0.4/theta_gen.at(i)),log(kT_gen.at(i) ));
        histosTH2F["Lund_plane_gen_all_z"]->Fill(log(0.4/theta_gen.at(i)),log(1./z_gen.at(i) ));
 
       first_splitting = first_splitting+1;
-      float dR_window = 0.20;
+      float dR_window = 0.1;
       float dR_max = dR_window;
       int index_true = -1;
       int index_reco = -1;
       float kT_min = 0.5;
       for (unsigned j = 0; j < z_reco.size(); ++j) //loop over reco-level splittings
       {
-       if (log(kT_reco.at(j)) < -3 || log(kT_reco.at(j)) > 4.33333) continue;
-       if (log(0.4/theta_reco.at(j)) < 0. || log(0.4/theta_reco.at(j)) > 4.75) continue;
+       if (log(kT_reco.at(j)) < logkTmin || log(kT_reco.at(j)) > 4.33333) continue;
+       if (log(0.4/theta_reco.at(j)) < 0. || log(0.4/theta_reco.at(j)) > 2.6) continue;
       // cout << " first splitting " << first_splitting << " j " << j << endl;
+       if (mismatch == true) cout << "reco " << log(0.4/theta_reco.at(j)) << "\t" << log(kT_reco.at(j)) << "\t" << phi2_reco.at(j) << "\t" << eta2_reco.at(j) << "\t" << endl;      
        if (first_splitting == 1)
        {
         histosTH2F["Lund_plane_reco_all"]->Fill(log(0.4/theta_reco.at(j)),log(kT_reco.at(j) ));
@@ -277,10 +408,11 @@ void test_2::Loop()
        if (dphi > TMath::Pi()) dphi = 2.*TMath::Pi() - dphi;
        float dR = std::sqrt(dphi*dphi + deta*deta);
        float kT_ratio = min(kT_reco.at(j),kT_gen.at(i))/max(kT_reco.at(j),kT_gen.at(i));
+       float pT_ratio = ( kT_reco.at(j)/sin(theta_reco.at(j)) ) / ( kT_gen.at(i)/sin(theta_gen.at(i)) );
 //       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.phi() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.phi() << " genSplitPhi " << phi2_gen.at(i)  << " dPhi " << dphi << endl;
 //       cout << "det-level splitting " << j << " dR " <<  dR << " dEta " << deta << " dPhi " << dphi  << " kT ratio " << kT_ratio << endl;
 //       cout << "det-level splitting " << j << " jetRecoPhi " <<  jet_reco.jetPhiCA_charged() << " recoSplitPhi " << phi2_reco.at(j) << "jetGenPhi " << jet_gen.jetPhiCA_charged() << "genSplitPhi " << phi2_gen.at(i)  << endl;
-       if (dR < dR_max ) //find best pair
+       if (dR < dR_max) //find best pair
        {
 	 dR_max = dR;
          index_true = i;
@@ -288,6 +420,8 @@ void test_2::Loop()
          kT_min = kT_ratio;
 //         cout << " we have a match with dR " << dR << " and kTratio " << kT_min << endl;
        }//endif
+
+
       }//end for
 
        if ( index_reco == -1 || index_true == -1 ) continue;
@@ -297,15 +431,16 @@ void test_2::Loop()
        float dR_final, dEta_final, dPhi_final;
        for (unsigned l = 0; l < z_gen.size(); ++l) // loop over gen-level splitings, check if the previous match is true the other way around
        {
-         if (log(kT_gen.at(l)) < -6.5 || log(kT_gen.at(l)) > 7) continue;
-         if (log(0.4/theta_gen.at(l)) < 0. || log(0.4/theta_gen.at(l)) > 6) continue;
+         if (log(kT_gen.at(l)) < -3 || log(kT_gen.at(l)) > 7) continue;
+         if (log(0.4/theta_gen.at(l)) < 0. || log(0.4/theta_gen.at(l)) > 3) continue;
 //         if (log(1/z_gen.at(l)) > 6.9) continue; //gen-level phase-space
-
+         if (mismatch == true)  cout << "gen " << log(0.4/theta_gen.at(l)) << "\t" << log(kT_gen.at(l)) << "\t" << phi2_gen.at(l) << "\t" << eta2_gen.at(l) << "\t" << endl;
          float dphi = fabs(phi2_reco.at(index_reco) - phi2_gen.at(l));
          float deta = eta2_reco.at(index_reco) - eta2_gen.at(l);
          if (dphi > TMath::Pi()) dphi = 2.*TMath::Pi() - dphi;
          float dR = std::sqrt(dphi*dphi + deta*deta);
-         float kT_ratio = min(kT_reco.at(index_reco),kT_gen.at(l))/max(kT_reco.at(index_reco),kT_gen.at(l));      
+         float kT_ratio = min(kT_reco.at(index_reco),kT_gen.at(l))/max(kT_reco.at(index_reco),kT_gen.at(l));
+         float pT_ratio = ( kT_reco.at(index_reco)/sin(theta_reco.at(index_reco)) ) / ( kT_gen.at(i)/sin(theta_gen.at(l)) ); 
          if (dR < dR_max ) //find best pair
          {
            dR_max = dR;
@@ -319,7 +454,10 @@ void test_2::Loop()
      dEta_final = eta2_reco.at(index_reco) - eta2_gen.at(index_true);
      if (dPhi_final > TMath::Pi()) dPhi_final = 2.*TMath::Pi() - dPhi_final;
      dR_final = std::sqrt(dEta_final*dEta_final+dPhi_final*dPhi_final);
+
+//     cout << theta_reco.at(index_reco) << " " << kT_reco(index_reco) << " " << theta_gen.at(index_true) << " " << kT_gen(index_true) << endl;
  
+
      histosTH1F["dR"]->Fill(dR_final);
      histosTH1F["dEta"]->Fill(dEta_final);
      histosTH1F["dPhi"]->Fill(dPhi_final);
@@ -334,7 +472,17 @@ void test_2::Loop()
      if (log(kT_gen.at(index_true)) < 2) histosTH1F["residual_kT_nonperturbative"]->Fill((kT_reco.at(index_reco)-kT_gen.at(index_true) ) /kT_gen.at(index_true) );
 
      histosTH1F["ratio_response_kT"]->Fill(kT_reco.at(index_reco) /kT_gen.at(index_true) );
-     if (log(kT_gen.at(index_true)) > 2) histosTH1F["ratio_response_kT_perturbative"]->Fill(kT_reco.at(index_reco) /kT_gen.at(index_true) );
+     if (log(kT_gen.at(index_true)) > 2)
+     {
+      histosTH1F["ratio_response_kT_perturbative"]->Fill(kT_reco.at(index_reco) /kT_gen.at(index_true) );
+      histosTH2F["residual_vs_kTreco"]->Fill(log(kT_reco.at(index_reco)), (kT_reco.at(index_reco)-kT_gen.at(index_true) ) /kT_gen.at(index_true));
+      histosTH2F["residual_vs_kTtrue"]->Fill(log(kT_gen.at(index_true)), (kT_reco.at(index_reco)-kT_gen.at(index_true) ) /kT_gen.at(index_true));
+      histosTH2F["residual_vs_thetareco"]->Fill(log(0.4/theta_reco.at(index_reco)), (theta_reco.at(index_reco)-theta_gen.at(index_true) ) /theta_gen.at(index_true)  );
+      histosTH2F["residual_vs_thetatrue"]->Fill(log(0.4/theta_gen.at(index_true)), (theta_reco.at(index_reco)-theta_gen.at(index_true) ) /theta_gen.at(index_true)  );
+      //if ( fabs(log(kT_gen.at(index_true)) - 1.55325) < 0.0001 && fabs(log(0.4/theta_gen.at(index_true)) - 0.659149) < 0.0001) mismatch = true;
+      //if (log(kT_reco.at(index_reco)) < -1 &&  fabs(log(kT_gen.at(index_true)) - 2.34441) < 0.001 && fabs(log(0.4/theta_gen.at(index_true)) - 1.85783 ) < 0.001 ) mismatch = true;
+
+     }
      if (log(kT_gen.at(index_true)) < 2) histosTH1F["ratio_response_kT_nonperturbative"]->Fill(kT_reco.at(index_reco) /kT_gen.at(index_true) );
 
 

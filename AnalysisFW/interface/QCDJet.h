@@ -27,11 +27,11 @@ class QCDJet
 //     void setPFParticles(std::vector<LorentzVector> fpfFParticles) {pfParticles_ = fpfFParticles;}
      //------------ Get methods ------------------------------
      const LorentzVector& p4()    const {return P4_;}
-     float pt()                   const {return P4_.pt()/cor_;}
+     float pt()                   const {return P4_.pt();}
      int genidx()                 const {return genIdx_;}
      float genR()                 const {return genR_;} 
      float ptCor()                const {return P4_.pt();}
-     float e()                    const {return P4_.energy()/cor_;}
+     float e()                    const {return P4_.energy();}
      float eCor()                 const {return P4_.energy();}
      float eta()                  const {return P4_.eta();}
      float y()                    const {return P4_.Rapidity();}

@@ -50,33 +50,38 @@ class QCDGenJet
      void setZ(vector<double> dz){ z_ = dz;}
      void setKt(vector<double> dkt){ kT_ = dkt;}
      void setTheta(vector<double> dtheta){ theta_ = dtheta;}
-//     void setEfficiency(vector<double> defficiency){ efficiency_ = defficiency;}
 
      void setZ_charged(vector<double> dz_charged){ z_charged_ = dz_charged;}
      void setKt_charged(vector<double> dkt_charged){ kT_charged_ = dkt_charged;}
      void setTheta_charged(vector<double> dtheta_charged){ theta_charged_ = dtheta_charged;}
 
-     void setEta(vector<double> deta){ eta_ = deta;}
-     void setPhi(vector<double> dphi){ phi_ = dphi;}
+     void setEta2(vector<double> deta){ eta_ = deta;}
+     void setPhi2(vector<double> dphi){ phi_ = dphi;}
 
-     void setEta_charged(vector<double> deta_charged){ eta_charged_ = deta_charged;}
-     void setPhi_charged(vector<double> dphi_charged){ phi_charged_ = dphi_charged;}
+     void setEta2_charged(vector<double> deta_charged){ eta_charged_ = deta_charged;}
+     void setPhi2_charged(vector<double> dphi_charged){ phi_charged_ = dphi_charged;}
 
+     void setJetPhi_CA(float djetphi_ca){ jetphi_CA_ = djetphi_ca;}
+     void setJetPhi_CA_charged(float djetphi_ca_charged){ jetphi_CA_charged_ = djetphi_ca_charged;}
 
 
      vector<double> z()    const{return z_;}
      vector<double> kT()    const{return kT_;}
      vector<double> theta()    const{return theta_;}
-     vector<double> eta_splitting()    const{return eta_;}
-     vector<double> phi_splitting()    const{return phi_;}
+     vector<double> eta2_splitting()    const{return eta_;}
+     vector<double> phi2_splitting()    const{return phi_;}
 
 
 
      vector<double> z_charged()    const{return z_charged_;}
      vector<double> kT_charged()    const{return kT_charged_;}
      vector<double> theta_charged()    const{return theta_charged_;}
-     vector<double> eta_charged()    const{return eta_charged_;}
-     vector<double> phi_charged()    const{return phi_charged_;}
+     vector<double> eta2_charged()    const{return eta_charged_;}
+     vector<double> phi2_charged()    const{return phi_charged_;}
+
+
+     float jetPhiCA()                  const {return jetphi_CA_;}
+     float jetPhiCA_charged()                  const {return jetphi_CA_charged_;}
 
 
      float pt()                   const {return P4_.pt();}
@@ -127,6 +132,7 @@ class QCDGenJet
      vector<double> kT_charged_;
      vector<double> theta_charged_;
 
-
+     float jetphi_CA_;
+     float jetphi_CA_charged_;
 };
 #endif
