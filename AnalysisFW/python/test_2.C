@@ -46,11 +46,11 @@ test_2::test_2(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DATA_MG8_500MeV_0MeV.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DATA_MG8_testJan312022.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("DATA_MG8_500MeV_0MeV.root");
+         f = new TFile("DATA_MG8_testJan312022.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("DATA_MG8_500MeV_0MeV.root:/ak4");
+      TDirectory * dir = (TDirectory*)f->Get("DATA_MG8_testJan312022.root:/ak4");
       dir->GetObject("ProcessedTree",tree);
    }
    Init(tree);
@@ -165,19 +165,15 @@ void test_2::Loop()
 
 
    histosTH1F["reco_efficiency_PF"] = new TH1F("reco_efficiency_PF", "reco_efficiency_PF",11,0.,1.1);
-   histosTH1F["reco_efficiency_charged"] = new TH1F("reco_efficiency_charged", "reco_efficiency_charged",11,0.,1.1);
+
 
    histosTH2F["Lund plane raw splittings"] = new TH2F("Lund plane raw splittings", "Lund plane raw splittings", 40, 0, 6.0, 40, 0.6, 7);
    histosTH2F["Lund plane raw kT vs theta"] = new TH2F("Lund plane raw kT vs theta", "Lund plane raw kT vs theta", 40, 0, 6.0, 40, -3, 5.5);
 
-   histosTH2F["Lund plane raw splittings charged"] = new TH2F("Lund plane raw splittings charged", "Lund plane raw splittings charged", 40, 0, 6.0, 40, 0.693, 7);
-   histosTH2F["Lund plane raw kT vs theta charged"] = new TH2F("Lund plane raw kT vs theta charged", "Lund plane raw kT vs theta charged", 40, 0, 6.0, 40, -3, 5.5);
 
    histosTH2F["Lund plane raw splittings gen"] = new TH2F("Lund plane raw splittings gen", "Lund plane raw splittings gen", 40, 0, 6.0, 40, 0.693, 7);
    histosTH2F["Lund plane raw kT vs theta gen"] = new TH2F("Lund plane raw kT vs theta gen", "Lund plane raw kT vs theta gen", 40, 0, 6.0, 40, -3, 5.5);
 
-   histosTH2F["Lund plane raw splittings charged gen"] = new TH2F("Lund plane raw splittings charged gen", "Lund plane raw splittings charged gen", 40, 0, 6.0, 40, 0.693, 7);
-   histosTH2F["Lund plane raw kT vs theta charged gen"] = new TH2F("Lund plane raw kT vs theta charged gen", "Lund plane raw kT vs theta charged gen", 40, 0, 6.0, 40, -3, 5.5);
 
    histosTH1F["theta_highKt"] =  new TH1F("theta_highKt", "theta_highKt",10,0., 4.0);
    histosTH1F["theta_lowKt"] =  new TH1F("theta_lowKt", "theta_lowKt",20,0., 6.0);
@@ -213,11 +209,6 @@ void test_2::Loop()
    histosTH1F["residual_theta_perturbative"] =  new TH1F("residual_theta_perturbative", "residual_theta_perturbative",200,-1., 1.);
    histosTH1F["residual_theta_nonperturbative"] =  new TH1F("residual_theta_nonperturbative", "residual_theta_nonperturbative",200,-1., 1.);
 
-   histosTH1F["theta_highKt_charged"] =  new TH1F("theta_highKt_charged", "theta_highKt_charged",10,0., 4.0);
-   histosTH1F["theta_lowKt_charged"] =  new TH1F("theta_lowKt_charged", "theta_lowKt_charged",20,0., 6.0);
-
-   histosTH1F["kT_alltheta_charged"] =  new TH1F("kT_alltheta_charged", "kT_alltheta_charged",nbins_dR, 0, logRmax);
-
    histosTH2F["response kT neutral+charged"] = new TH2F("response kT neutral+charged", "", nbins, logkTmin, logkTmax, nbins, logkTmin, logkTmax);
    histosTH2F["response theta neutral+charged"] = new TH2F("response theta neutral+charged", "", nbins_dR, 0, logRmax, nbins_dR, 0, logRmax);
 
@@ -228,8 +219,6 @@ void test_2::Loop()
    histosTH2F["response theta charged"] = new TH2F("response theta charged", "", nbins_dR, 0, logRmax, nbins_dR, 0, logRmax );
 
 
-   histosTH1F["kT_charged_gen_spectrum"] = new TH1F("kT_charged_gen_spectrum", "", nbins, logkTmin, logkTmax);
-   histosTH1F["theta_charged_gen_spectrum"] = new TH1F("theta_charged_gen_spectrum", "", nbins_dR, 0, logRmax);
 
    histosTH2F["Lund_plane_reco_all"] = new TH2F("Lund_plane_reco_all", "", nbins_dR, 0, logRmax, nbins, logkTmin, logkTmax);
    histosTH2F["Lund_plane_reco_matched"] = new TH2F("Lund_plane_reco_matched", "", nbins_dR, 0, logRmax, nbins, logkTmin, logkTmax);
@@ -268,7 +257,7 @@ void test_2::Loop()
      auto kT = jet.kT();
 
 
-     auto z_charged = jet.z_charged();
+/*     auto z_charged = jet.z_charged();
      auto theta_charged = jet.theta_charged();
      auto kT_charged = jet.kT_charged();
 
@@ -294,7 +283,7 @@ void test_2::Loop()
           histosTH1F["kT_alltheta_charged"]->Fill(log(kT_charged.at(i)));
         }
 
-     }
+     }*/
     }
 
 //   if ( events->nPFJetsCHS < 2) continue;
@@ -306,24 +295,16 @@ void test_2::Loop()
      auto theta = jet.theta();
      auto kT = jet.kT();
 
-     auto z_charged = jet.z_charged();
-     auto theta_charged = jet.theta_charged();
-     auto kT_charged = jet.kT_charged();
+
 //    cout << jet.pt() << endl;
 
-     if (z.size()> 0 && jet.pt() > 500  && z_charged.size() > 0 && fabs(jet.y()) < 2.0 )
+     if (z.size()> 0 && jet.pt() > 500 && fabs(jet.y()) < 2.0 )
       {
         for (unsigned i = 0; i < z.size(); ++i)
         {
           histosTH2F["Lund plane raw splittings gen"]->Fill(log(0.4/theta.at(i)), log(1/z.at(i)) );
           histosTH2F["Lund plane raw kT vs theta gen"]->Fill(log(0.4/theta.at(i)), log(kT.at(i)) );
 //          cout << eta2.at(i)-jet.eta() << " " << kT.at(i) << endl; 
-        }
-
-        for (unsigned i = 0; i < z_charged.size(); ++i)
-        {
-          histosTH2F["Lund plane raw splittings charged gen"]->Fill(log(0.4/theta_charged.at(i)), log(1/z_charged.at(i)) );
-          histosTH2F["Lund plane raw kT vs theta charged gen"]->Fill(log(0.4/theta_charged.at(i)), log(kT_charged.at(i)) );
         }
 
      }
@@ -340,13 +321,6 @@ void test_2::Loop()
      auto eta2_reco = jet_reco.eta2_splitting();
      auto phi2_reco = jet_reco.phi2_splitting();
 
-     auto eta2_charged_reco = jet_reco.eta2_splitting_charged();
-     auto phi2_charged_reco = jet_reco.eta2_splitting_charged();
-
-     auto z_charged_reco = jet_reco.z_charged();
-     auto theta_charged_reco = jet_reco.theta_charged();
-     auto kT_charged_reco = jet_reco.kT_charged();
-
      if ( jet_reco.genidx() == -1 ) continue; //if det-level jet is not matched, skip
 //     if ( jet_reco.pfDeepCSVb() < 0.50 ) continue; 
 
@@ -357,14 +331,7 @@ void test_2::Loop()
      auto eta2_gen = jet_gen.eta2_splitting();
      auto phi2_gen = jet_gen.phi2_splitting();
 
-
-     auto z_charged_gen = jet_gen.z_charged();
-     auto theta_charged_gen = jet_gen.theta_charged();
-     auto kT_charged_gen = jet_gen.kT_charged();
-     auto eta2_charged_gen = jet_gen.eta2_charged();
-     auto phi2_charged_gen = jet_gen.phi2_charged();
-
-     if  (!(z_charged_gen.size()> 0 && jet_gen.pt() > 500 && fabs(jet_gen.y()) < 2.0 && z_charged_reco.size() > 0 && fabs(jet_gen.eta()) < 2.0 )) continue;
+     if  (!(z_gen.size()> 0 && jet_gen.pt() > 500 && fabs(jet_gen.y()) < 2.0 && z_reco.size() > 0 && fabs(jet_gen.eta()) < 2.0 )) continue;
 
      if  (!(z_gen.size()> 0 && jet_gen.pt() > 500 && fabs(jet_gen.y()) < 2.0 && z_reco.size() > 0 )) continue;
       int first_splitting = 0;

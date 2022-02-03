@@ -12,15 +12,17 @@ using std::vector;
 class QCDPFJet : public QCDPFJetBTag {
    public:
      //------------ Constructor ------------------------------
-     QCDPFJet() {chf_=0;nhf_=0;nemf_=0;cemf_=0;muf_=0;chm_=0;nhm_=0;phm_=0;elm_=0;mum_=0,cm_=0; lha_=-1; width_=-1; thrust_= -1; ptD2_ = -1; multiplicity_ = -1; lha_charged_=-1; width_charged_=-1; thrust_charged_= -1; ptD2_charged_ = -1; multiplicity_charged_ = -1;}
+     QCDPFJet() {chf_=0;nhf_=0;nemf_=0;cemf_=0;muf_=0;chm_=0;nhm_=0;phm_=0;elm_=0;mum_=0,cm_=0;}
+
+// lha_=-1; width_=-1; thrust_= -1; ptD2_ = -1; multiplicity_ = -1; lha_charged_=-1; width_charged_=-1; thrust_charged_= -1; ptD2_charged_ = -1; multiplicity_charged_ = -1;}
      //------------ Destructor -------------------------------
      ~QCDPFJet() {}
      //------------ Set methods ------------------------------
-     void setJetPhi_CA(float djetphi_ca){ jetphi_CA_ = djetphi_ca;}
-     void setJetPhi_CA_charged(float djetphi_ca_charged){ jetphi_CA_charged_ = djetphi_ca_charged;}
+/*     void setJetPhi_CA(float djetphi_ca){ jetphi_CA_ = djetphi_ca;}
+     void setJetPhi_CA_charged(float djetphi_ca_charged){ jetphi_CA_charged_ = djetphi_ca_charged;}*/
 
      void setFrac(float fchf, float fnhf, float fnemf, float fcemf, float fmuf)  {chf_ = fchf; nhf_ = fnhf; nemf_ = fnemf; cemf_ = fcemf; muf_ = fmuf;}
-     void setLHA(float flha){ lha_ = flha;}
+/*     void setLHA(float flha){ lha_ = flha;}
      void setWidth(float fwidth){ width_ = fwidth;}
      void setThrust(float fthrust){ thrust_ = fthrust;}
      void setPtD2(float fptD2){ ptD2_ = fptD2;}
@@ -29,7 +31,7 @@ class QCDPFJet : public QCDPFJetBTag {
      void setWidth_charged(float fwidth_charged){ width_charged_ = fwidth_charged;}
      void setThrust_charged(float fthrust_charged){ thrust_charged_ = fthrust_charged;}
      void setPtD2_charged(float fptD2_charged){ ptD2_charged_ = fptD2_charged;}
-     void setMultiplicity_charged(int fmultiplicity_charged){ multiplicity_charged_ = fmultiplicity_charged;}
+     void setMultiplicity_charged(int fmultiplicity_charged){ multiplicity_charged_ = fmultiplicity_charged;}*/
 
      void setMulti(int fncand, int fchm, int fnhm, int fphm, int felm, int fmum, int fcm) {ncand_ = fncand; chm_ = fchm; nhm_ = fnhm; phm_ = fphm; elm_ = felm; mum_ = fmum; cm_ = fcm; }
      void setBetaPrime(float fbetaPrime) {betaPrime_ = fbetaPrime;}
@@ -43,15 +45,15 @@ class QCDPFJet : public QCDPFJetBTag {
 //     void setPurity(vector<double> dpurity){ purity_ = dpurity;}
      void setZ(vector<double> dz){ z_ = dz;}
 
-     void setZ_charged(vector<double> dz_charged){ z_charged_ = dz_charged;}
-     void setKt_charged(vector<double> dkt_charged){ kT_charged_ = dkt_charged;}
-     void setTheta_charged(vector<double> dtheta_charged){ theta_charged_ = dtheta_charged;}
+//     void setZ_charged(vector<double> dz_charged){ z_charged_ = dz_charged;}
+//     void setKt_charged(vector<double> dkt_charged){ kT_charged_ = dkt_charged;}
+//     void setTheta_charged(vector<double> dtheta_charged){ theta_charged_ = dtheta_charged;}
 
      void setEta2(vector<double> deta){ eta_ = deta;}
      void setPhi2(vector<double> dphi){ phi_ = dphi;}
 
-     void setEta2_charged(vector<double> deta_charged){ eta_charged_ = deta_charged;}
-     void setPhi2_charged(vector<double> dphi_charged){ phi_charged_ = dphi_charged;}
+//     void setEta2_charged(vector<double> deta_charged){ eta_charged_ = deta_charged;}
+//     void setPhi2_charged(vector<double> dphi_charged){ phi_charged_ = dphi_charged;}
 
 
      //------------ Get methods ------------------------------
@@ -65,7 +67,7 @@ class QCDPFJet : public QCDPFJetBTag {
      float hf_phf()   const {return hf_phf_;}
 
 
-
+/*
      float lha()   const {return lha_;}
      float width()   const {return width_;}
      float thrust()   const {return thrust_;}
@@ -81,19 +83,19 @@ class QCDPFJet : public QCDPFJetBTag {
 
      float jetPhiCA()                  const {return jetphi_CA_;}
      float jetPhiCA_charged()                  const {return jetphi_CA_charged_;}
-
+*/
      vector<double> z()    const{return z_;}
      vector<double> kT()    const{return kT_;}
      vector<double> theta()    const{return theta_;}
      vector<double> eta2_splitting()    const{return eta_;}
      vector<double> phi2_splitting()    const{return phi_;}
 
-     vector<double> z_charged()    const{return z_charged_;}
+/*     vector<double> z_charged()    const{return z_charged_;}
      vector<double> kT_charged()    const{return kT_charged_;}
      vector<double> theta_charged()    const{return theta_charged_;}
      vector<double> eta2_splitting_charged()    const{return eta_charged_;}
      vector<double> phi2_splitting_charged()    const{return phi_charged_;}
-
+*/
 
 
      int chm()        const {return chm_;}
@@ -155,7 +157,7 @@ class QCDPFJet : public QCDPFJetBTag {
      float hof_; // Hadronic Outer energy fraction
 
 
-     //---- lha angularity ----
+/*     //---- lha angularity ----
      float lha_;
      //---- width ----
      float width_;
@@ -176,24 +178,24 @@ class QCDPFJet : public QCDPFJetBTag {
      float ptD2_charged_;
      //---- multiplicity ---
      int multiplicity_charged_;
-
+*/
      vector<double> eta_;
      vector<double> phi_;
 
-     vector<double> eta_charged_;
-     vector<double> phi_charged_;
+//     vector<double> eta_charged_;
+//     vector<double> phi_charged_;
 
      vector<double> z_;
      vector<double> kT_;
      vector<double> theta_;
 
-     vector<double> z_charged_;
-     vector<double> kT_charged_;
-     vector<double> theta_charged_;
+//     vector<double> z_charged_;
+//     vector<double> kT_charged_;
+//     vector<double> theta_charged_;
  
 //     vector<double> purity_;
-     float jetphi_CA_;
-     float jetphi_CA_charged_;
+//     float jetphi_CA_;
+//     float jetphi_CA_charged_;
      float pujid_;
 };
 #endif

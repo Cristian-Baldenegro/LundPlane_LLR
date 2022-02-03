@@ -265,7 +265,7 @@ private:
   vector<int>           mGenFlavourHadr;
   vector<int>           mGenFlavourPhys;
   vector<float>         mGenBPt;
-  vector<float>         mLHA;
+/*  vector<float>         mLHA;
   vector<float>         mWidth;
   vector<float>         mThrust;
   vector<float>         mPtD2;
@@ -275,14 +275,14 @@ private:
   vector<float>         mWidth_charged;
   vector<float>         mThrust_charged;
   vector<float>         mPtD2_charged;
-  vector<float>         mMultiplicity_charged;
+  vector<float>         mMultiplicity_charged;*/
 
   vector<vector<double>>         mZ;
   vector<vector<double>>         mKt;
   vector<vector<double>>         mTheta;
   vector<vector<double>>         mEta2;
   vector<vector<double>>         mPhi2;
-  vector<float>                  mJetPhi_CA;
+/*  vector<float>                  mJetPhi_CA;
 
 
   vector<vector<double>>         mZ_charged;
@@ -291,6 +291,7 @@ private:
   vector<vector<double>>         mEta2_charged;
   vector<vector<double>>         mPhi2_charged;
   vector<float>                  mJetPhi_CA_charged;
+*/
 
   vector<LorentzVector> mGenJets;
   map<int,int>          mGenJetPhysFlav;
@@ -375,7 +376,7 @@ private:
     return make_pair(imin,rmin);
   }
   template<typename T>
-  void IterativeDeclusteringDet(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2, float &jetPhi_CA)
+  void IterativeDeclusteringDet(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2)
    {
 
         fastjet::PseudoJet myjet;
@@ -422,7 +423,7 @@ private:
          if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
          if (valid_jet == true)
          {
-           jetPhi_CA = jj.phi();                                                                                                                 
+//           jetPhi_CA = jj.phi();                                                                                                                 
            while(jj.has_parents(j1,j2))
           {
                    if (j1.perp() < j2.perp()) swap(j1, j2);
@@ -441,7 +442,7 @@ private:
 }//, vector<double> & kt, vector<double> & theta);
 
   template<typename T>
-  void IterativeDeclusteringDetCharged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2, float &jetPhi_CA)
+  void IterativeDeclusteringDetCharged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2)
    {
 
         fastjet::PseudoJet myjet;
@@ -488,7 +489,7 @@ private:
          if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
          if (valid_jet == true)        
          {
-           jetPhi_CA = jj.phi();
+//           jetPhi_CA = jj.phi();
            while(jj.has_parents(j1,j2))
           {
                    if (j1.perp() < j2.perp()) swap(j1, j2);
@@ -506,7 +507,7 @@ private:
        
 }
   template<typename T>
-  void IterativeDeclusteringMC(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2, float &jetPhi_CA)
+  void IterativeDeclusteringMC(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2)
    {
 
         fastjet::PseudoJet myjet;
@@ -544,7 +545,7 @@ private:
          if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
          if (valid_jet == true)
          {
-           jetPhi_CA = jj.phi();                             
+//           jetPhi_CA = jj.phi();                             
            while(jj.has_parents(j1,j2))
           {
                    if (j1.perp() < j2.perp()) swap(j1, j2);
@@ -562,7 +563,7 @@ private:
 }//, vector<double> & kt, vector<double> & theta);
 
   template<typename T>
-  void IterativeDeclusteringMC_Charged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2, float &jetPhi_CA)
+  void IterativeDeclusteringMC_Charged(const T &jet, fastjet::PseudoJet *sub1, fastjet::PseudoJet *sub2, vector<double> &kt, vector<double> &theta, vector<double> &z, vector<double> &eta2, vector<double> &phi2)
    {
 
         fastjet::PseudoJet myjet;
@@ -600,7 +601,7 @@ private:
          if (fOutputJets.size() > 0){jj = fOutputJets[0]; valid_jet = true;}
          if (valid_jet == true)
          {
-           jetPhi_CA = jj.phi();
+//           jetPhi_CA = jj.phi();
            while(jj.has_parents(j1,j2))
           {
                    if (j1.perp() < j2.perp()) swap(j1, j2);
@@ -1308,7 +1309,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     auto j = theJetFlavourInfos->begin();
     auto k = theJetFlavourInfosPhys->begin();
     mGenJets.clear();
-    mLHA.clear();
+/*    mLHA.clear();
     mWidth.clear();
     mThrust.clear();
     mPtD2.clear();
@@ -1319,7 +1320,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     mThrust_charged.clear();
     mPtD2_charged.clear();
     mMultiplicity_charged.clear();
-
+*/
     mTheta.clear();
     mKt.clear();
     mZ.clear();
@@ -1327,7 +1328,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     mEta2.clear();
     mPhi2.clear();
 
-    mEta2_charged.clear();
+/*    mEta2_charged.clear();
     mPhi2_charged.clear();
 
     mJetPhi_CA_charged.clear();
@@ -1336,7 +1337,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     mTheta_charged.clear();
     mKt_charged.clear();
     mZ_charged.clear();
-
+*/
     mGenFlavour.clear();
     mGenFlavourHadr.clear();
     mGenFlavourPhys.clear();
@@ -1351,8 +1352,8 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 
       mGenJets.push_back(igen->p4());
 
-      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
-      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
+//      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
+//      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
 
        // Loop through the PF candidates within the jet.
        for (auto pidx = 0u; pidx < igen->numberOfDaughters(); ++pidx)
@@ -1375,7 +1376,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
          float jetPt = igen->pt(); //jet with JES correction
          float partPt = part->pt(); //pf candidate pT
 
-         lha += (partPt/jetPt)*sqrt(dr/r);
+/*         lha += (partPt/jetPt)*sqrt(dr/r);
          width += (partPt/jetPt)*dr/r;
          thrust += (partPt/jetPt)*(dr/r)*(dr/r);
          ptD2 += (partPt/jetPt)*(partPt/jetPt);
@@ -1389,7 +1390,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
          ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
          if (part->pt() > 1) multiplicity_charged += 1;
          }
-
+*/
        // }
       }
 
@@ -1400,7 +1401,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> eta2;
     vector<double> phi2;
 
-    vector<double> kt_charged;
+/*    vector<double> kt_charged;
     vector<double> theta_charged;
     vector<double> z_charged;
 
@@ -1408,20 +1409,20 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> phi2_charged;
 
 
-    float jetPhi_CA, jetPhi_CA_charged;
+    float jetPhi_CA, jetPhi_CA_charged;*/
     fastjet::PseudoJet *sub1MC = new fastjet::PseudoJet();
     fastjet::PseudoJet *sub2MC = new fastjet::PseudoJet();
 
 
-      IterativeDeclusteringMC(*igen, sub1MC, sub2MC, kt, theta, z, eta2, phi2, jetPhi_CA);
-      IterativeDeclusteringMC_Charged(*igen, sub1MC, sub2MC, kt_charged, theta_charged, z_charged, eta2_charged, phi2_charged, jetPhi_CA_charged);
+      IterativeDeclusteringMC(*igen, sub1MC, sub2MC, kt, theta, z, eta2, phi2);
+//      IterativeDeclusteringMC_Charged(*igen, sub1MC, sub2MC, kt_charged, theta_charged, z_charged, eta2_charged, phi2_charged, jetPhi_CA_charged);
 
       mKt.push_back(kt);
       mTheta.push_back(theta);
       mZ.push_back(z);
       mEta2.push_back(eta2);
       mPhi2.push_back(phi2);
-      mJetPhi_CA.push_back(jetPhi_CA);
+/*      mJetPhi_CA.push_back(jetPhi_CA);
 
       mEta2_charged.push_back(eta2_charged);
       mPhi2_charged.push_back(phi2_charged);
@@ -1442,7 +1443,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       mWidth_charged.push_back(width_charged);
       mThrust_charged.push_back(thrust_charged);
       mPtD2_charged.push_back(ptD2_charged);
-      mMultiplicity_charged.push_back(multiplicity_charged);
+      mMultiplicity_charged.push_back(multiplicity_charged);*/
 
       mGenFlavour.push_back(aInfo.getPartonFlavour());
       mGenFlavourHadr.push_back(aInfo.getHadronFlavour());
@@ -1549,8 +1550,8 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
   int maxGenMatch = -1;
   for (auto ijet=patJets->begin(); ijet!=patJets->end(); ++ijet){
 
-      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
-      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
+//      float lha = 0, width = 0, thrust = 0, ptD2 = 0; int multiplicity = 0 ;
+//      float lha_charged = 0, width_charged = 0, thrust_charged = 0, ptD2_charged = 0; int multiplicity_charged = 0 ;
 
     // Preselection
     if (!ijet->isPFJet()) continue;
@@ -1634,7 +1635,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
          float jetPt = ijet->pt(); //jet with JES correction
          float partPt = part->pt()*part->puppiWeight(); //pf candidate pT
 
-         lha += (partPt/jetPt)*sqrt(dr/r);
+/*         lha += (partPt/jetPt)*sqrt(dr/r);
          width += (partPt/jetPt)*dr/r;
          thrust += (partPt/jetPt)*(dr/r)*(dr/r);
          ptD2 += (partPt/jetPt)*(partPt/jetPt);
@@ -1648,6 +1649,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
            ptD2_charged += (partPt/jetPt)*(partPt/jetPt);
            if (part->pt()*part->puppiWeight() > 1 ) multiplicity_charged += 1;
          }
+*/
         }
        validPFinJet = false;
       }
@@ -1660,22 +1662,22 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     vector<double> eta2;
     vector<double> phi2;
 
-    vector<double> kt_charged;
+/*    vector<double> kt_charged;
     vector<double> theta_charged;
     vector<double> z_charged;
 
     vector<double> eta2_charged;
     vector<double> phi2_charged;
 
-    float jetPhi_CA, jetPhi_CA_charged;
+    float jetPhi_CA, jetPhi_CA_charged;*/
 
     fastjet::PseudoJet *sub1Det = new fastjet::PseudoJet();
     fastjet::PseudoJet *sub2Det = new fastjet::PseudoJet();
 
 
-    IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z, eta2, phi2, jetPhi_CA);
+    IterativeDeclusteringDet(*ijet, sub1Det, sub2Det, kt, theta, z, eta2, phi2);
 
-    IterativeDeclusteringDetCharged(*ijet, sub1Det, sub2Det, kt_charged, theta_charged, z_charged, eta2_charged, phi2_charged, jetPhi_CA_charged);
+//    IterativeDeclusteringDetCharged(*ijet, sub1Det, sub2Det, kt_charged, theta_charged, z_charged, eta2_charged, phi2_charged, jetPhi_CA_charged);
 
 
     QCDPFJet qcdJet;
@@ -1684,7 +1686,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     qcdJet.setZ(z);
     qcdJet.setEta2(eta2);
     qcdJet.setPhi2(phi2);
-    qcdJet.setJetPhi_CA(jetPhi_CA);
+/*    qcdJet.setJetPhi_CA(jetPhi_CA);
 
 
     qcdJet.setKt_charged(kt_charged);
@@ -1692,12 +1694,12 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     qcdJet.setZ_charged(z_charged);
     qcdJet.setEta2_charged(eta2_charged);
     qcdJet.setPhi2_charged(phi2_charged);
-    qcdJet.setJetPhi_CA_charged(jetPhi_CA_charged);
+    qcdJet.setJetPhi_CA_charged(jetPhi_CA_charged);*/
 
     // The fraction of CHS-removed PU (defined similarly as the other fractions, w.r.t. unscaled jet energy).
     float bPrime = (pue/ijet->energy())*scale; 
     qcdJet.setBetaPrime(bPrime);
-    if (lha < 1 && lha > 0) qcdJet.setLHA(lha);
+/*    if (lha < 1 && lha > 0) qcdJet.setLHA(lha);
     if (width < 1 && width > 0) qcdJet.setWidth(width);
     if (thrust < 1 && thrust > 0) qcdJet.setThrust(thrust);
     if (ptD2 < 1 && ptD2 > 0) qcdJet.setPtD2(ptD2);
@@ -1708,7 +1710,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     if (thrust_charged < 1 && thrust_charged > 0) qcdJet.setThrust_charged(thrust_charged);
     if (ptD2_charged < 1 && ptD2_charged > 0) qcdJet.setPtD2_charged(ptD2_charged);
     if (multiplicity_charged > 0) qcdJet.setMultiplicity_charged(multiplicity_charged);
-     
+  */   
     // JEC uncertainty
     double unc(0.0);
     vector<float> uncSrc(0);
@@ -1882,18 +1884,18 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     while (mGenJets.size()>limit) {
 //      qGenJets.pop_back();
       mGenJets.pop_back();
-      mLHA.pop_back();
+/*      mLHA.pop_back();
       mWidth.pop_back();
       mThrust.pop_back();
       mPtD2.pop_back();
       mMultiplicity.pop_back();
-
+*/
       mZ.pop_back();
       mKt.pop_back();
       mTheta.pop_back();
       mEta2.pop_back();
       mPhi2.pop_back();
-      mJetPhi_CA.pop_back();
+/*      mJetPhi_CA.pop_back();
       mJetPhi_CA_charged.pop_back();
 
       mLHA_charged.pop_back();
@@ -1907,7 +1909,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       mTheta_charged.pop_back();
       mEta2_charged.pop_back();
       mPhi2_charged.pop_back();
-
+*/
       mGenBPt.pop_back();
       mGenFlavour.pop_back();
       mGenFlavourHadr.pop_back();
@@ -1917,11 +1919,11 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     for (unsigned igen = 0; igen<mGenJets.size(); ++igen)
     {
         qcdGenJet.setP4(mGenJets[igen]);
-        qcdGenJet.setLHA(mLHA[igen]); 
+/*        qcdGenJet.setLHA(mLHA[igen]); 
         qcdGenJet.setWidth(mWidth[igen]);
         qcdGenJet.setThrust(mThrust[igen]);
         qcdGenJet.setPtD2(mPtD2[igen]);
-        qcdGenJet.setMultiplicity(mMultiplicity[igen]);
+        qcdGenJet.setMultiplicity(mMultiplicity[igen]);*/
 
         qcdGenJet.setZ(mZ[igen]);
         qcdGenJet.setKt(mKt[igen]);
@@ -1929,9 +1931,9 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
         qcdGenJet.setEta2(mEta2[igen]);
         qcdGenJet.setPhi2(mPhi2[igen]);
 
-        qcdGenJet.setJetPhi_CA(mJetPhi_CA[igen]);
+//        qcdGenJet.setJetPhi_CA(mJetPhi_CA[igen]);
 
-        qcdGenJet.setZ_charged(mZ_charged[igen]);
+/*        qcdGenJet.setZ_charged(mZ_charged[igen]);
         qcdGenJet.setKt_charged(mKt_charged[igen]);
         qcdGenJet.setTheta_charged(mTheta_charged[igen]);
         qcdGenJet.setEta2_charged(mEta2_charged[igen]);
@@ -1943,7 +1945,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
         qcdGenJet.setWidth_charged(mWidth_charged[igen]);
         qcdGenJet.setThrust_charged(mThrust_charged[igen]);
         qcdGenJet.setPtD2_charged(mPtD2_charged[igen]);
-        qcdGenJet.setMultiplicity_charged(mMultiplicity_charged[igen]);
+        qcdGenJet.setMultiplicity_charged(mMultiplicity_charged[igen]);*/
         qGenJets.push_back(qcdGenJet);
     }
 //  qcdGenJet.setP4(igen->p4());
